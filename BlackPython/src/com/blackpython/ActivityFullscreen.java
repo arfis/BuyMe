@@ -16,18 +16,20 @@ import com.blackpython.R;
 //aktivita pre zobrazovanie informacii o kuponov
 public class ActivityFullscreen extends Activity implements AnimationListener {
 	ImageView img;
-	Index home;
 	RatingBar rb;
 	int value;
 	int index;
 	String instance;
 	Animation rotation;
+	boolean gold = false;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle b = getIntent().getExtras();
         //ziskanie id stlaceneho tlacidla
+        if(b.getInt("golden")!=1)
+        {
         value = b.getInt("key");
         instance = b.getString("instance");
         
@@ -40,18 +42,18 @@ public class ActivityFullscreen extends Activity implements AnimationListener {
         
         setContentView(R.layout.activityfullscreen);
         
-       rb = (RatingBar) findViewById(R.id.ratingBar1); 
-       for(int i=0;i<10;i++)
-       {
+        rb = (RatingBar) findViewById(R.id.ratingBar1); 
+        for(int i=0;i<10;i++)
+        {
     	   //finding the button and its rating
-    	   if(value == Index.coupons[i].getImageBut())
+    	   if(value == Coupons_fragment.coupons[i].getImageBut())
     	   {
-    		   rb.setRating(Index.coupons[i].getRating());
+    		   rb.setRating(Coupons_fragment.coupons[i].getRating());
     		   
     		   index = i;
     		   break;
     	   }
-       }
+        }
        
        img=(ImageButton)findViewById(R.id.picture);
        img.setBackgroundResource(R.drawable.kupon);
@@ -59,6 +61,15 @@ public class ActivityFullscreen extends Activity implements AnimationListener {
        value, Toast.LENGTH_LONG).show();
        addListenerOnButton();
        addListenerOnRatingBar();
+       }
+        
+       //if it is a golden coupon
+       else
+       {
+    	   img=(ImageButton)findViewById(R.id.picture);
+           //img.setBackgroundResource(R.drawable.);
+            	
+       }
     }
 	
 	public void addListenerOnRatingBar() {
@@ -69,7 +80,7 @@ public class ActivityFullscreen extends Activity implements AnimationListener {
 			@Override
 			public void onRatingChanged(RatingBar ratingBar, float rating,
 				boolean fromUser) {
-				Index.coupons[index].setRating(ratingBar.getRating());
+				Coupons_fragment.coupons[index].setRating(ratingBar.getRating());
 			}
 		});
 	}
@@ -82,8 +93,8 @@ public class ActivityFullscreen extends Activity implements AnimationListener {
             	 @Override
             	 public void onClick(View arg0) {
             		 img.setAnimation(rotation);
-            		 home.coupons[index].setUsed(1);
-            		 home.coupons[index].setRating(rb.getRating());
+            		 Coupons_fragment.coupons[index].setUsed(1);
+            		 Coupons_fragment.coupons[index].setRating(rb.getRating());
             		 //ImageButton ib = (ImageButton)home.coupons[index].getImageBut();
             		 rb.setVisibility(View.GONE);
             	 }

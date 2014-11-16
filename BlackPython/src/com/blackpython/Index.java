@@ -13,10 +13,16 @@ import com.blackpython.R;
 
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -29,9 +35,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -40,7 +51,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-public class Index extends ActionBarActivity {
+public class Index extends FragmentActivity {
 	
 	boolean firstTime = true;
 	int pressed;
@@ -58,39 +69,12 @@ public class Index extends ActionBarActivity {
 			button9,
 			button10;
 	MemoryStorage coup;
-   
-	public void init()
-	{
-		 	ListView lv=(ListView) findViewById(R.id.list_item);
-			coupons[0] = new ButtonCoupon();
-			coupons[1] = new ButtonCoupon();
-			coupons[2] = new ButtonCoupon();
-			coupons[3] = new ButtonCoupon();
-			coupons[4] = new ButtonCoupon();
-			coupons[5] = new ButtonCoupon();
-			coupons[6] = new ButtonCoupon();
-			coupons[7] = new ButtonCoupon();
-			coupons[8] = new ButtonCoupon();
-			coupons[9] = new ButtonCoupon();
-			
-		  	coupons[0].setImageBut(R.id.ImageButton1);
-	        coupons[1].setImageBut(R.id.ImageButton2);
-	        coupons[2].setImageBut(R.id.ImageButton3);
-	        coupons[3].setImageBut(R.id.ImageButton4);
-	        coupons[4].setImageBut(R.id.ImageButton5);
-	        coupons[5].setImageBut(R.id.ImageButton6);
-	        coupons[6].setImageBut(R.id.ImageButton7);
-	        coupons[7].setImageBut(R.id.ImageButton8);
-	        coupons[8].setImageBut(R.id.ImageButton9);
-	        coupons[9].setImageBut(R.id.ImageButton10);
-	        
-	        for(ButtonCoupon bc : coupons)
-	        {
-	        	bc.setUsed(0);
-	        	bc.setRating(0);
-	        }
-		
-	}
+	private DrawerLayout drawerLayout;
+	private String[] drawerListViewItems;
+    private ListView drawerListView;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
+    
+	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,27 +82,30 @@ public class Index extends ActionBarActivity {
         Log.d("CREATE","nastal create");
         setContentView(R.layout.activity_index);
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .commit();            
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Coupons_fragment coup = new Coupons_fragment();
+        ft.replace(R.id.frame_container, coup);
+        ft.commit();
         }
-        
-        //first time start
-        if(firstTime == true)
-        {
-        init();
+        // get list items from strings.xml
+        drawerListViewItems = getResources().getStringArray(R.array.items);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        // get ListView defined in activity_main.xml
+        drawerListView = (ListView) findViewById(R.id.left_drawer);
+ 
+                // Set the adapter for the list view
+        drawerListView.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.drawer_listview_item, drawerListViewItems));
+         
         MemoryStorage coup = new MemoryStorage(this);
         coup.addCoupon(new Coupon("10% Zlava na arasidy",0,1));
         coup.addCoupon(new Coupon("20% zlava na feferony",0,1));
         Log.d("DB", Integer.toString(coup.getAllCoupons().size()));
         new HttpAsyncTask().execute("http://hmkcode.appspot.com/rest/controller/get.json");
-        addListenerOnButton(); 
         firstTime = false;
-        
         //adding data to the coupon structure
-      
         
-        
-        }
+        drawerListView.setOnItemClickListener(new DrawerItemClickListener());
     }
 	public static String GET(String url){
         InputStream inputStream = null;
@@ -190,26 +177,7 @@ public class Index extends ActionBarActivity {
     @Override
     public void onResume()
     {
-    	int gone = 0;
     	super.onResume();
-    	for(int i=0;i<10;i++)
-        {
-   		 //check if coupon was used in the array of coupons
-   		 
-            ImageButton ib=(ImageButton) findViewById(coupons[i].getImageBut());	
-            if(coupons[i].getUsed() == 1)
-   		 {
-   			 ib.setVisibility(View.GONE);
-   			 gone++;
-   			 
-   		 }
-        }
-    	if(gone == 10)
-    	{
-    		ImageView sold = (ImageView) findViewById(R.id.imageView1);
-    		sold.setVisibility(View.VISIBLE);
-    	}
-    	Log.d("RESUME","nastal resume");  
     }
     
     @Override
@@ -219,50 +187,71 @@ public class Index extends ActionBarActivity {
         return true;
     }
     
-    public void addListenerOnButton() {
-        ImageButton imagebuttons[]={ button1,button2,button3,button4,button5,
-        		button6,button7,button8,button9,button10};
-        
-    int ids[]={R.id.ImageButton1,R.id.ImageButton2,R.id.ImageButton3,R.id.ImageButton4,R.id.ImageButton5
-    		,R.id.ImageButton6,R.id.ImageButton7,R.id.ImageButton8,R.id.ImageButton9
-    		,R.id.ImageButton10};
+    //adding listeners to the coupons - every image button has got a unique listener
     
-    	 for(int i=0;i<imagebuttons.length;i++)
-         {
-    		 //check if coupon was used in the array of coupons
-    		 
-             imagebuttons[i]=(ImageButton) findViewById(ids[i]);	
-             if(coupons[i].getUsed() == 1)
-    		 {
-    			 imagebuttons[i].setVisibility(View.GONE);
-    		 }
-             imagebuttons[i].setOnClickListener(new View.OnClickListener() {
-            	 @Override
-			public void onClick(View arg0) {
-               Intent intent = new Intent(Index.this, ActivityFullscreen.class);
-			   Bundle b = new Bundle();
-			   
-			   b.putInt("key", arg0.getId());
-			   b.putString("instance", Index.this.toString());
-			   pressed = arg0.getId();
-			   intent.putExtras(b); //Put your id to your next Intent
-			   startActivity(intent);
-			}
-             });
-		}
- 
-	}
-    
+    //If there is an icon
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
+ 
+         // call ActionBarDrawerToggle.onOptionsItemSelected(), if it returns true
+        // then it has handled the app icon touch event
+ 
+        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
+    
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
 
+        @Override
+        public void onItemClick(AdapterView parent, View view, int position,long id) {
+          
+           // Highlight the selected item, update the title, and close the drawer
+           // update selected item and title, then close the drawer
+           drawerListView.setItemChecked(position, true);
+           setTitle("......");
+
+           String text= "menu click... should be implemented: " + position;
+           Toast.makeText(Index.this, text , Toast.LENGTH_LONG).show();
+           showLayout(position);
+           drawerLayout.closeDrawer(drawerListView);
+           
+        }
+        void showLayout(int position)
+        {
+        	Fragment newFragment;
+        	FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        	
+        	switch(position){
+        	case 0:
+            	Coupons_fragment coup = new Coupons_fragment();
+            	ft.replace(R.id.frame_container, coup);
+            	ft.addToBackStack(null);
+            	ft.commit();
+            	//addListenerOnButton();
+            	//setButtons();
+                break;
+        	case 1:
+        		Rules_fragment rules = new Rules_fragment();
+                ft.replace(R.id.frame_container, rules);
+                ft.addToBackStack(null);
+                ft.commit();
+                break;
+        	case 2:
+                About_fragment about = new About_fragment();
+                ft.replace(R.id.frame_container, about);
+                ft.addToBackStack(null);
+                ft.commit();
+                break;
+        	case 3:
+        		Intent intent = new Intent(Index.this, ActivityFullscreen.class);
+                Bundle b = new Bundle();	   
+                b.putInt("golden", 1);
+        		intent.putExtras(b); //Put your id to your next Intent
+        		startActivity(intent);
+        		
+        } 
+        }
+    }   
 }
