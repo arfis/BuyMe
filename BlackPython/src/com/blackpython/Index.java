@@ -30,6 +30,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Toast;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -56,9 +58,10 @@ public class Index extends ActionBarActivity {
 			button9,
 			button10;
 	MemoryStorage coup;
-    
+   
 	public void init()
 	{
+		 	ListView lv=(ListView) findViewById(R.id.list_item);
 			coupons[0] = new ButtonCoupon();
 			coupons[1] = new ButtonCoupon();
 			coupons[2] = new ButtonCoupon();
@@ -187,6 +190,7 @@ public class Index extends ActionBarActivity {
     @Override
     public void onResume()
     {
+    	int gone = 0;
     	super.onResume();
     	for(int i=0;i<10;i++)
         {
@@ -196,8 +200,15 @@ public class Index extends ActionBarActivity {
             if(coupons[i].getUsed() == 1)
    		 {
    			 ib.setVisibility(View.GONE);
+   			 gone++;
+   			 
    		 }
         }
+    	if(gone == 10)
+    	{
+    		ImageView sold = (ImageView) findViewById(R.id.imageView1);
+    		sold.setVisibility(View.VISIBLE);
+    	}
     	Log.d("RESUME","nastal resume");  
     }
     
