@@ -11,41 +11,25 @@ import com.data.MemoryStorage;
 import com.gui.ButtonCoupon;
 import com.blackpython.R;
 
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.os.Build;
-import android.preference.PreferenceManager;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -171,9 +155,9 @@ public class Index extends FragmentActivity {
     @Override
     public void onPause()
     {
-    	super.onPause();
-    	//this.getIntent().setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+    	super.onPause();	
     }
+    
     @Override
     public void onResume()
     {
@@ -220,7 +204,6 @@ public class Index extends FragmentActivity {
         }
         void showLayout(int position)
         {
-        	Fragment newFragment;
         	FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         	
         	switch(position){

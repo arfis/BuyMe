@@ -54,7 +54,7 @@ public class ActivityFullscreen extends Activity implements AnimationListener {
     		   break;
     	   }
         }
-       
+      
        img=(ImageButton)findViewById(R.id.picture);
        img.setBackgroundResource(R.drawable.kupon);
        Toast.makeText(ActivityFullscreen.this, "toto bolo stlacene: " + 
