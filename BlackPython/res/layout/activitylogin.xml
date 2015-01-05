@@ -24,4 +24,13 @@
         android:layout_marginTop="33dp"
         android:text="Pokracovat bez prihlasenia" />
 
+    <com.facebook.widget.ProfilePictureView
+        android:id="@+id/profilePictureView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/authButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="64dp" >
+    </com.facebook.widget.ProfilePictureView>
+
 </RelativeLayout>

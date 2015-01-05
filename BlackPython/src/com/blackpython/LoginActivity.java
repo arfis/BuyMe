@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -15,7 +16,9 @@ public class LoginActivity extends FragmentActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
-
+	    
+	    getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+	    getActionBar().hide();
 	    if (savedInstanceState == null) {
 	        // Add the fragment on initial activity setup
 	        loginf = new LoginActivityFragment();

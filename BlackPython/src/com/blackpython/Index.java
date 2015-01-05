@@ -5,24 +5,33 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import com.data.Coupon;
 import com.data.MemoryStorage;
 import com.gui.ButtonCoupon;
 import com.blackpython.R;
 
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.Signature;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -35,7 +44,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-public class Index extends FragmentActivity {
+public class Index extends  FragmentActivity {
 	
 	boolean firstTime = true;
 	int pressed;
@@ -58,11 +67,35 @@ public class Index extends FragmentActivity {
     private ListView drawerListView;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     
-	
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.index, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+    
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //this.getIntent().setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(
+                    "com.blackpython", 
+                    PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = null;
+				try {
+					md = MessageDigest.getInstance("SHA");
+				} catch (NoSuchAlgorithmException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+                md.update(signature.toByteArray());
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+                }
+        } catch (NameNotFoundException e){e.printStackTrace();};
+        
         Log.d("CREATE","nastal create");
         setContentView(R.layout.activity_index);
         if (savedInstanceState == null) {
@@ -78,6 +111,8 @@ public class Index extends FragmentActivity {
         drawerListView = (ListView) findViewById(R.id.left_drawer);
  
                 // Set the adapter for the list view
+        drawerListView.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.drawer_photo, drawerListViewItems));
         drawerListView.setAdapter(new ArrayAdapter<String>(this,
                 R.layout.drawer_listview_item, drawerListViewItems));
          
@@ -164,12 +199,6 @@ public class Index extends FragmentActivity {
     	super.onResume();
     }
     
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.index, menu);
-        return true;
-    }
     
     //adding listeners to the coupons - every image button has got a unique listener
     
