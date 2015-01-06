@@ -7,8 +7,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.data.Coupon;
+import com.data.DrawerItem;
+import com.data.DrawerItemCustomAdapter;
 import com.data.MemoryStorage;
 import com.gui.ButtonCoupon;
 import com.blackpython.R;
@@ -44,6 +48,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.Toast;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -54,6 +59,8 @@ public class Index extends  FragmentActivity {
 	
 	boolean firstTime = true;
 	int pressed;
+	 final private String ICON = "icon";
+	 final private String MENU = "menu";
 	static ButtonCoupon[] coupons = new ButtonCoupon[10];
 	String mTitle = "zatvorene";
 	String mDrawerTitle = "otvorene?";
@@ -69,6 +76,8 @@ public class Index extends  FragmentActivity {
 			button9,
 			button10;
 	MemoryStorage coup;
+	//pocet prvkov v drawer-i
+	DrawerItem[] drawerItem = new DrawerItem[4];
 	private DrawerLayout drawerLayout;
 	private String[] drawerListViewItems;
     private ListView drawerListView;
@@ -105,6 +114,13 @@ public class Index extends  FragmentActivity {
                 }
         } catch (NameNotFoundException e){e.printStackTrace();};
         
+        int[] icon = new int[]{
+        		 R.drawable.about,
+        		 R.drawable.info,
+        		 R.drawable.rulez,
+        		 R.drawable.coup
+        		 };
+        
         Log.d("CREATE","nastal create");
         setContentView(R.layout.activity_index);
         
@@ -114,9 +130,19 @@ public class Index extends  FragmentActivity {
         	ft.replace(R.id.frame_container, coup);
         	ft.commit();
         }
-       
+        
+        // Keys used in Hashmap
+        //String[] from = { ICON,MENU };
+        
+       // Ids of views in listview_layout
+        //int[] to = { R.id.icon , R.id.text1};
+        
+        // Each row in the list stores country name, count and flag
+        
         // get list items from strings.xml
-        drawerListViewItems = getResources().getStringArray(R.array.items);
+        //drawerListViewItems = getResources().getStringArray(R.array.items);
+        //drawerListViewItems = getResources().getStringArray(R.drawable.about);
+        
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         //odstrani ikonku
         //getActionBar().setDisplayShowHomeEnabled(false);
@@ -147,7 +173,12 @@ public class Index extends  FragmentActivity {
         }
         };
         
+        drawerItem[0] = new DrawerItem(R.drawable.coup,"Kupón");
+        drawerItem[1] = new DrawerItem(R.drawable.rulez,"Pravidlá");
+        drawerItem[2] = new DrawerItem(R.drawable.about,"O nás");
+        drawerItem[3] = new DrawerItem(R.drawable.info,"Info");
         
+        DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, R.layout.drawerlist_row, drawerItem);
         // Setting event listener for the drawer
         drawerLayout.setDrawerListener(mDrawerToggle);
         
@@ -155,10 +186,10 @@ public class Index extends  FragmentActivity {
         drawerListView = (ListView) findViewById(R.id.left_drawer);
  
                 // Set the adapter for the list view
-        drawerListView.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_photo, drawerListViewItems));
-        drawerListView.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_listview_item, drawerListViewItems));
+        drawerListView.setAdapter(adapter);
+        
+        //drawerListView.setAdapter(new ArrayAdapter<String>(this,
+          //      R.layout.drawer_listview_item, drawerListViewItems));
          
         MemoryStorage coup = new MemoryStorage(this);
         //coup.addCoupon(new Coupon("10% Zlava na arasidy",0,1));
@@ -317,11 +348,10 @@ public class Index extends  FragmentActivity {
                 ft.commit();
                 break;
         	case 3:
-        		Intent intent = new Intent(Index.this, ActivityFullscreen.class);
-                Bundle b = new Bundle();	   
-                b.putInt("golden", 1);
-        		intent.putExtras(b); //Put your id to your next Intent
-        		startActivity(intent);
+        		Info_fragment info = new Info_fragment();
+                ft.replace(R.id.frame_container, info);
+                ft.addToBackStack(null);
+                ft.commit();
         		
         } 
         }
