@@ -13,17 +13,23 @@ import com.data.MemoryStorage;
 import com.gui.ButtonCoupon;
 import com.blackpython.R;
 
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBarDrawerToggle;
+
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+
+import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.Signature;
+import android.content.res.Configuration;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -49,7 +55,8 @@ public class Index extends  FragmentActivity {
 	boolean firstTime = true;
 	int pressed;
 	static ButtonCoupon[] coupons = new ButtonCoupon[10];
-	
+	String mTitle = "zatvorene";
+	String mDrawerTitle = "otvorene?";
 	ImageButton 
 			button1,
 			button2,
@@ -65,7 +72,8 @@ public class Index extends  FragmentActivity {
 	private DrawerLayout drawerLayout;
 	private String[] drawerListViewItems;
     private ListView drawerListView;
-    private ActionBarDrawerToggle actionBarDrawerToggle;
+    private ActionBarDrawerToggle mDrawerToggle;
+
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -75,10 +83,11 @@ public class Index extends  FragmentActivity {
         return super.onCreateOptionsMenu(menu);
     }
     
-	@Override
+	@SuppressLint("NewApi") @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //this.getIntent().setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        //finding out the hash number for google play
         try {
             PackageInfo info = getPackageManager().getPackageInfo(
                     "com.blackpython", 
@@ -98,15 +107,50 @@ public class Index extends  FragmentActivity {
         
         Log.d("CREATE","nastal create");
         setContentView(R.layout.activity_index);
+        
         if (savedInstanceState == null) {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        Coupons_fragment coup = new Coupons_fragment();
-        ft.replace(R.id.frame_container, coup);
-        ft.commit();
+        	FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        	Coupons_fragment coup = new Coupons_fragment();
+        	ft.replace(R.id.frame_container, coup);
+        	ft.commit();
         }
+       
         // get list items from strings.xml
         drawerListViewItems = getResources().getStringArray(R.array.items);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        //odstrani ikonku
+        //getActionBar().setDisplayShowHomeEnabled(false);
+        //tieto kokotiny chybali aby drawer mal tie 3 palicky a isiel
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(getResources().getString((R.color.red)))));
+        //potialto, posledny riadok je len pre novu api ice cream sandwich
+        
+        // Creating a ToggleButton for NavigationDrawer with drawer event listener
+        mDrawerToggle = new ActionBarDrawerToggle(this, 
+        		drawerLayout, 
+        		R.drawable.ic_drawer, //pridanie novej ikonky
+        		R.string.drawer_open,
+        		R.string.drawer_close){
+        
+        /** Called when drawer is closed */
+        public void onDrawerClosed(View view) {
+        //highlightSelectedCountry();
+        supportInvalidateOptionsMenu();
+        }
+        
+       /** Called when a drawer is opened */
+        public void onDrawerOpened(View drawerView) {
+        //getSupportActionBar().setTitle("Select a Country");
+        supportInvalidateOptionsMenu();
+        }
+        };
+        
+        
+        // Setting event listener for the drawer
+        drawerLayout.setDrawerListener(mDrawerToggle);
+        
         // get ListView defined in activity_main.xml
         drawerListView = (ListView) findViewById(R.id.left_drawer);
  
@@ -117,8 +161,8 @@ public class Index extends  FragmentActivity {
                 R.layout.drawer_listview_item, drawerListViewItems));
          
         MemoryStorage coup = new MemoryStorage(this);
-        coup.addCoupon(new Coupon("10% Zlava na arasidy",0,1));
-        coup.addCoupon(new Coupon("20% zlava na feferony",0,1));
+        //coup.addCoupon(new Coupon("10% Zlava na arasidy",0,1));
+        //coup.addCoupon(new Coupon("20% zlava na feferony",0,1));
         Log.d("DB", Integer.toString(coup.getAllCoupons().size()));
         new HttpAsyncTask().execute("http://hmkcode.appspot.com/rest/controller/get.json");
         firstTime = false;
@@ -126,6 +170,8 @@ public class Index extends  FragmentActivity {
         
         drawerListView.setOnItemClickListener(new DrawerItemClickListener());
     }
+	
+	//geting data from website json
 	public static String GET(String url){
         InputStream inputStream = null;
         String result = "";
@@ -199,7 +245,18 @@ public class Index extends  FragmentActivity {
     	super.onResume();
     }
     
-    
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
     //adding listeners to the coupons - every image button has got a unique listener
     
     //If there is an icon
@@ -209,12 +266,13 @@ public class Index extends  FragmentActivity {
          // call ActionBarDrawerToggle.onOptionsItemSelected(), if it returns true
         // then it has handled the app icon touch event
  
-        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
     
+    //po kliknuti na item z drawera
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
 
         @Override
@@ -223,7 +281,7 @@ public class Index extends  FragmentActivity {
            // Highlight the selected item, update the title, and close the drawer
            // update selected item and title, then close the drawer
            drawerListView.setItemChecked(position, true);
-           setTitle("......");
+           setTitle("Hot Coupons");
 
            String text= "menu click... should be implemented: " + position;
            Toast.makeText(Index.this, text , Toast.LENGTH_LONG).show();
@@ -231,6 +289,8 @@ public class Index extends  FragmentActivity {
            drawerLayout.closeDrawer(drawerListView);
            
         }
+        
+        //zobrazenie noveho fragmentu
         void showLayout(int position)
         {
         	FragmentTransaction ft = getSupportFragmentManager().beginTransaction();

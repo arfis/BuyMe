@@ -131,7 +131,7 @@ public class MemoryStorage extends SQLiteOpenHelper{
                 coupon.setPermission(Integer.parseInt(cursor.getString(2)));
                 coupon.setUsed(Integer.parseInt(cursor.getString(3)));
  
-                // Add book to books
+                // Add a coupon
                 
                 //if it was used, dont add it
                 if(coupon.isUsed() == 0)
@@ -139,7 +139,7 @@ public class MemoryStorage extends SQLiteOpenHelper{
             } while (cursor.moveToNext());
         }
  
-        Log.d("getAllBooks()", coupons.toString());
+        Log.d("getAllCoupons()", coupons.toString());
  
         // return books
         return coupons;
@@ -185,6 +185,12 @@ public class MemoryStorage extends SQLiteOpenHelper{
  
         Log.d("deleteCoupon: ", coupon.toString());
  
+    }
+    public void deleteAllCoupons()
+    {
+    	SQLiteDatabase db = this.getWritableDatabase();
+    	db.delete(TABLE_COUPONS,null,null);
+    	db.close();
     }
 }
 

@@ -7,7 +7,7 @@
     -->
   
 	
-	<style name="ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+	
     <!--  <item name="android:icon">@drawable/logo</item>-->
-	</style>
+
 </resources>
