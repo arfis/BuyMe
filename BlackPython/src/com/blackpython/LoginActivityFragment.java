@@ -12,7 +12,9 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageButton;
 
+import com.data.UserInformation;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
@@ -25,7 +27,8 @@ import com.facebook.widget.LoginButton;
 import com.facebook.widget.ProfilePictureView;
 
 public class LoginActivityFragment extends Fragment{
-	Button buttonfreelogin;
+	ImageButton buttonfreelogin;
+	LoginButton authButton;
 	ProfilePictureView pf;
 	private static final String TAG = "LoginActivityFragment";
 	private UiLifecycleHelper uiHelper;
@@ -54,11 +57,11 @@ public class LoginActivityFragment extends Fragment{
 	    View view = inflater.inflate(R.layout.activitylogin, container, false);
 	    
 		pf = (ProfilePictureView) view.findViewById(R.id.profilePictureView1);
-	    LoginButton authButton = (LoginButton) view.findViewById(R.id.authButton);
+	    authButton = (LoginButton) view.findViewById(R.id.authButton);
 	    
 	    authButton.setFragment(this);
 	    authButton.setReadPermissions(Arrays.asList("email"));
-	    buttonfreelogin = (Button) view.findViewById(R.id.buttonfreelogin);
+	    buttonfreelogin = (ImageButton) view.findViewById(R.id.buttonfreelogin);
 	    addListenerOnButton(view);
 	    return view;
 	}
@@ -80,7 +83,7 @@ public class LoginActivityFragment extends Fragment{
 		});
 	}
 	
-	
+	//zmena stavu prihlasenia
 	private void onSessionStateChange(Session session, SessionState state, Exception exception) {
 	    if (state.isOpened()) {
 	    	Log.i(TAG, "Logged in...");
@@ -89,16 +92,29 @@ public class LoginActivityFragment extends Fragment{
 	                new Request.GraphUserCallback() {
 	                    // callback after Graph API response with user object
 
+	    		//uspesne prihlasenie cez FB
 	                    @Override
 	                    public void onCompleted(GraphUser user,
 	                            Response response) {
 	                        // TODO Auto-generated method stub
 	                        if (user != null) {
-	                        	pf.setProfileId(user.getId());
+	                        	//pf.setProfileId(user.getId());
 	                            Log.d("info:",user.getName() + ","
 	                                    + user.getUsername() + ","
 	                                    + user.getId() + "," + user.getLink()
 	                                    + "," + user.getFirstName()+ "EMAIL: " +user.asMap().get("email"));
+	                            
+	                            //ziskanie informacii do statickej triedy UserInformation
+	                            UserInformation.setLoggedIn(true);
+	                            UserInformation.setLoggingButton(authButton);
+	                            UserInformation.setName(user.getName());
+	                            UserInformation.setId(user.getId());
+	                            UserInformation.setEmail(user.asMap().get("email"));
+	                            Intent intent = new Intent(getActivity(), Index.class);
+	         				   	Bundle b = new Bundle();
+	         				   	b.putInt("login", 1);
+	         				   	intent.putExtras(b); //Put your id to your next Intent
+	         				   	startActivity(intent);
 	                        }
 	                    }
 	                    });
@@ -106,7 +122,6 @@ public class LoginActivityFragment extends Fragment{
 	    }
 	    
 		else if (state.isClosed()) {
-			pf.setProfileId(null);
 	        Log.i(TAG, "Logged out...");
 	    }
 	}

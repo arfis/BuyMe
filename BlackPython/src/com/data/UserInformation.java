@@ -1,34 +1,62 @@
 package com.data;
 
+import com.facebook.widget.LoginButton;
+
 public class UserInformation {
-	String name;
-	String email;
-	String id;
-	int usedCoupons;
+	static String name;
+	static Object email;
+	static String id;
+	static int used = 0;
+	static int usedCoupons;
+	static boolean loggedIn;
+	static LoginButton loggingButton;
+	static MemoryStorage memory;
 	
-	public String getName() {
+	public static MemoryStorage getMemory() {
+		return memory;
+	}
+
+	public static void setMemory(MemoryStorage memory) {
+		UserInformation.memory = memory;
+	}
+
+	public static void CouponIncrement()
+	{
+		used++;
+	}
+	
+	public static LoginButton getLoggingButton() {
+		return loggingButton;
+	}
+	public static void setLoggingButton(LoginButton loggingButton) {
+		UserInformation.loggingButton = loggingButton;
+	}
+	public static boolean isLoggedIn() {
+		return loggedIn;
+	}
+	public static void setLoggedIn(boolean loggedIn) {
+		UserInformation.loggedIn = loggedIn;
+	}
+	public static String getName() {
 		return name;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public static void setName(String namee) {
+		name = namee;
 	}
-	public String getEmail() {
+	public static Object getEmail() {
 		return email;
 	}
-	public void setEmail(String email) {
-		this.email = email;
+	public static void setEmail(Object object) {
+		email = object;
 	}
-	public String getId() {
+	public static String getId() {
 		return id;
 	}
-	public void setId(String id) {
-		this.id = id;
+	public static void setId(String idd) {
+		id = idd;
 	}
-	public int getUsedCoupons() {
-		return usedCoupons;
-	}
-	public void setUsedCoupons(int usedCoupons) {
-		this.usedCoupons = usedCoupons;
+	public static int getUsedCoupons() {
+		return used;
 	}
 	
 }

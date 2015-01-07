@@ -14,12 +14,23 @@ public class MemoryStorage extends SQLiteOpenHelper{
 	// Database Version
     private static final int DATABASE_VERSION = 1;
     // Database Name
-    private static final String DATABASE_NAME = "CouponDB";
+    private static final String DATABASE_NAME = "HotCouponsDB";
  
     public MemoryStorage(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);  
     }
  
+    public boolean isDatabaseEmpty()
+    {
+    	String query = "SELECT  * FROM " + TABLE_COUPONS;
+    	 
+        // 2. get reference to writable DB
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.getCount() > 0)
+    	return false;
+        else return true;
+    }
     @Override
     public void onCreate(SQLiteDatabase db) {
         // SQL statement to create book table
@@ -27,6 +38,8 @@ public class MemoryStorage extends SQLiteOpenHelper{
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " + 
                 "title TEXT, "+
                 "permission INTEGER," +
+                "price TEXT," +
+                "about TEXT, "+
                 "used INTEGER )";
  
         // create books table
@@ -54,9 +67,11 @@ public class MemoryStorage extends SQLiteOpenHelper{
     private static final String KEY_TITLE = "title";
     private static final String KEY_PERMISSION = "permission";
     private static final String KEY_USED = "used";
+    private static final String KEY_ABOUT = "about";
+    private static final String KEY_PRICE = "price";
     //private static final String KEY_ImageButton = "imageButton";
     
-    private static final String[] COLUMNS = {KEY_ID,KEY_TITLE,KEY_PERMISSION,KEY_USED};
+    private static final String[] COLUMNS = {KEY_ID,KEY_TITLE,KEY_PERMISSION,KEY_PRICE,KEY_ABOUT,KEY_USED};
  
     public void addCoupon(Coupon coupon){
         Log.d("addCoupon", coupon.toString());
@@ -68,6 +83,8 @@ public class MemoryStorage extends SQLiteOpenHelper{
         values.put(KEY_TITLE, coupon.getTitle()); // get title 
         values.put(KEY_PERMISSION, coupon.isPermission()); // get author
         values.put(KEY_USED, coupon.isUsed());
+        values.put(KEY_PRICE, coupon.getPrice());
+        values.put(KEY_ABOUT, coupon.getAbout());
         // 3. insert
         db.insert(TABLE_COUPONS, // table
                 null, //nullColumnHack
@@ -102,8 +119,10 @@ public class MemoryStorage extends SQLiteOpenHelper{
         coupon.setId(Integer.parseInt(cursor.getString(0)));
         coupon.setTitle(cursor.getString(1));
         coupon.setPermission(Integer.parseInt(cursor.getString(2)));
-        coupon.setUsed(Integer.parseInt(cursor.getString(3)));
- 
+        coupon.setPrice(cursor.getString(3));
+        coupon.setAbout(cursor.getString(4));
+        coupon.setUsed(Integer.parseInt(cursor.getString(5)));
+        
         Log.d("getCoupon("+id+")", coupon.toString());
  
         // 5. return book
@@ -129,12 +148,11 @@ public class MemoryStorage extends SQLiteOpenHelper{
                 coupon.setId(Integer.parseInt(cursor.getString(0)));
                 coupon.setTitle(cursor.getString(1));
                 coupon.setPermission(Integer.parseInt(cursor.getString(2)));
-                coupon.setUsed(Integer.parseInt(cursor.getString(3)));
+                coupon.setPrice(cursor.getString(3));
+                coupon.setAbout(cursor.getString(4));
+                coupon.setUsed(Integer.parseInt(cursor.getString(5)));
  
                 // Add a coupon
-                
-                //if it was used, dont add it
-                if(coupon.isUsed() == 0)
                 coupons.add(coupon);
             } while (cursor.moveToNext());
         }
@@ -145,30 +163,35 @@ public class MemoryStorage extends SQLiteOpenHelper{
         return coupons;
     }
  
-     /* Updating single book
-    public int updateBook(Coupon coupon) {
+     
+    public int CouponUsed(int coupon) {
  
         // 1. get reference to writable DB
         SQLiteDatabase db = this.getWritableDatabase();
  
         // 2. create ContentValues to add key "column"/value
         ContentValues values = new ContentValues();
-        values.put("title", coupon.getTitle()); // get title 
-        values.put("author", coupon.getAuthor()); // get author
+        values.put("used", "1"); // get title 
  
         // 3. updating row
-        int i = db.update(TABLE_BOOKS, //table
+        int i = db.update(TABLE_COUPONS, //table
                 values, // column/value
-                KEY_ID+" = ?", // selections
-                new String[] { String.valueOf(book.getId()) }); //selection args
+                KEY_ID+" = "+ coupon , // selections
+                null); //selection args
  
         // 4. close
         db.close();
- 
+        
+        List<Coupon> c = getAllCoupons();
+        for(i = 0;i<c.size();i++)
+        {
+        	Log.d("DB vypis","Used: " + Integer.toString(c.get(i).isUsed()));
+        	Log.d("DB vypis","ID: " + Integer.toString(c.get(i).getId()));
+        }
         return i;
  
     }
- */
+
     // Deleting single book
     public void deleteBook(Coupon coupon) {
  

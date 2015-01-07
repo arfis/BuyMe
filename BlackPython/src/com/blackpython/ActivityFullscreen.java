@@ -1,9 +1,13 @@
 package com.blackpython;
 
+import java.util.List;
+
+import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager.LayoutParams;
 import android.text.method.ScrollingMovementMethod;
@@ -23,6 +27,11 @@ import android.widget.RatingBar.OnRatingBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.blackpython.R;
+import com.data.Coupon;
+import com.data.CouponSet;
+import com.data.MemoryStorage;
+import com.data.UserInformation;
+import com.fragments.Fragment_coupons;
 
 //aktivita pre zobrazovanie informacii o kuponov
 public class ActivityFullscreen extends Activity implements AnimationListener {
@@ -30,17 +39,19 @@ public class ActivityFullscreen extends Activity implements AnimationListener {
 	RatingBar rb;
 	TextView tv,tv2;
 	Button but,button;
+	MemoryStorage db;
 	int value;
 	int index;
 	String instance;
 	Animation rotation,fadeIn;
 	boolean gold = false;
 	
-	@SuppressWarnings("deprecation")
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB) @SuppressWarnings("deprecation")
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle b = getIntent().getExtras();
+        db = UserInformation.getMemory();
         //ziskanie id stlaceneho tlacidla
         ActionBar actionBar = getActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(getResources().getString((R.color.red)))));
@@ -65,33 +76,29 @@ public class ActivityFullscreen extends Activity implements AnimationListener {
         rotation.setAnimationListener(this);
         
         setContentView(R.layout.activityfullscreen);
+        
         tv = (TextView) findViewById(R.id.textView1);
-        tv.setText("Vikendovy pobyt v hoteli Kempinsky Moskva");
         tv2 = (TextView) findViewById(R.id.textView2);
-        tv2.setText("It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).");
         LinearLayout cont = (LinearLayout) findViewById(R.id.linearLayout1);
         tv2.setMovementMethod(new ScrollingMovementMethod());
-        
         //rb = (RatingBar) findViewById(R.id.ratingBar1); 
         
         //zistenie ktore tlacidlo bolo stlacene
         for(int i=0;i<10;i++)
         {
     	   //finding the button and its rating
-    	   if(value == Coupons_fragment.coupons[i].getImageBut())
+    	   if(value == Fragment_coupons.coupons[i].getImageBut())
     	   {
     		   //rb.setRating(Coupons_fragment.coupons[i].getRating());
     		   index = i;
     		   break;
     	   }
         }
-      
-       img=(ImageButton)findViewById(R.id.picture);
-       img.setBackgroundResource(R.drawable.couponimg);
+        
        
        but = (Button) findViewById(R.id.button1);
-       but.setBackgroundDrawable(getResources().getDrawable(R.drawable.couponbutton2));
-       but.setText("200");
+       but.setBackgroundDrawable(getResources().getDrawable(R.drawable.coupon_use));
+       setCoupon(index);
        
        but.setOnClickListener(new Button.OnClickListener(){
 
@@ -112,15 +119,18 @@ public class ActivityFullscreen extends Activity implements AnimationListener {
     	             //metoda na pridanie listenera na ano button
     	             //addListenerOnButton();
     	             ano.setOnClickListener(new View.OnClickListener() {
-    	            	 @Override
+    	            	 @TargetApi(Build.VERSION_CODES.HONEYCOMB) @Override
     	            	 public void onClick(View arg0) {
     	            		 but.setVisibility(View.GONE);
     	            		 popupWindow.dismiss();
     	            		 getActionBar().hide();
     	            		 img.setAnimation(rotation);
-    	            		 Coupons_fragment.coupons[index].setUsed(1);
+    	            		 Fragment_coupons.coupons[index].setUsed(1);
     	            		 tv.setVisibility(View.GONE);
     	            		 tv2.setVisibility(View.GONE);
+    	            		 db.CouponUsed(index+1);
+    	            		 CouponSet.getCoupons().get(index).setUsed(1);
+    	            		 
     	            		 //Coupons_fragment.coupons[index].setRating(rb.getRating());
     	            		 //ImageButton ib = (ImageButton)home.coupons[index].getImageBut();
     	            		 //rb.setVisibility(View.GONE);
@@ -143,6 +153,16 @@ public class ActivityFullscreen extends Activity implements AnimationListener {
         
        //if it is a golden coupon
     }
+	//nadstavenie kuponu
+	private void setCoupon(int couponNumb)
+	{
+		Coupon c = CouponSet.getCoupons().get(couponNumb);
+		tv.setText(c.getTitle());
+        tv2.setText(c.getAbout());
+        img=(ImageButton)findViewById(R.id.picture);
+        img.setBackgroundResource(R.drawable.couponimg);
+        but.setText(c.getPrice());
+	}
 	/*
 	public void addListenerOnRatingBar() {
 	RatingBar ratingBar = (RatingBar) findViewById(R.id.ratingBar1);

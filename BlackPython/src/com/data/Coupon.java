@@ -7,19 +7,38 @@ public class Coupon {
 	private String title;
 	private int used;
 	private int Permission;
+	private String about;
+	private String price;
 	private ImageButton ib;
 	
-	public Coupon(String title, int used, int Permission)
+	public Coupon(String title,String about, int used, int Permission,String price)
 	{
 		this.setTitle(title);
 		this.setPermission(Permission);
 		this.setUsed(used);
-		
+		this.setAbout(about);
+		this.price = price;
 	}
 	
 	public Coupon()
 	{
 		
+	}
+	public void setPrice(String price)
+	{
+		this.price = price;
+	}
+	public String getPrice()
+	{
+		return price;
+	}
+	public String getAbout()
+	{
+		return about;
+	}
+	public void setAbout(String aboutt)
+	{
+		about = aboutt;
 	}
 	public int getId() {
 		return id;

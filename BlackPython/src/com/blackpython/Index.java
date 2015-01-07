@@ -11,9 +11,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.data.Coupon;
+import com.data.CouponSet;
 import com.data.DrawerItem;
 import com.data.DrawerItemCustomAdapter;
 import com.data.MemoryStorage;
+import com.data.UserInformation;
+import com.fragments.Fragment_about;
+import com.fragments.Fragment_coupons;
+import com.fragments.Fragment_info;
+import com.fragments.Fragment_profil;
+import com.fragments.Fragment_rulez;
 import com.gui.ButtonCoupon;
 import com.blackpython.R;
 
@@ -57,6 +64,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 public class Index extends  FragmentActivity {
 	
+	private final static String TAG_FRAGMENT = "INDEX";
 	boolean firstTime = true;
 	int pressed;
 	 final private String ICON = "icon";
@@ -77,7 +85,7 @@ public class Index extends  FragmentActivity {
 			button10;
 	MemoryStorage coup;
 	//pocet prvkov v drawer-i
-	DrawerItem[] drawerItem = new DrawerItem[4];
+	DrawerItem[] drawerItem = new DrawerItem[6];
 	private DrawerLayout drawerLayout;
 	private String[] drawerListViewItems;
     private ListView drawerListView;
@@ -95,6 +103,7 @@ public class Index extends  FragmentActivity {
 	@SuppressLint("NewApi") @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loadDatabase();
         //this.getIntent().setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         //finding out the hash number for google play
         try {
@@ -114,19 +123,14 @@ public class Index extends  FragmentActivity {
                 }
         } catch (NameNotFoundException e){e.printStackTrace();};
         
-        int[] icon = new int[]{
-        		 R.drawable.about,
-        		 R.drawable.info,
-        		 R.drawable.rulez,
-        		 R.drawable.coup
-        		 };
+   
         
         Log.d("CREATE","nastal create");
         setContentView(R.layout.activity_index);
         
         if (savedInstanceState == null) {
         	FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        	Coupons_fragment coup = new Coupons_fragment();
+        	Fragment_coupons coup = new Fragment_coupons();
         	ft.replace(R.id.frame_container, coup);
         	ft.commit();
         }
@@ -173,10 +177,13 @@ public class Index extends  FragmentActivity {
         }
         };
         
+        //pridanie poloziek do laveho vysuvacieho menu
         drawerItem[0] = new DrawerItem(R.drawable.coup,"Kupón");
         drawerItem[1] = new DrawerItem(R.drawable.rulez,"Pravidlá");
         drawerItem[2] = new DrawerItem(R.drawable.about,"O nás");
         drawerItem[3] = new DrawerItem(R.drawable.info,"Info");
+        drawerItem[4] = new DrawerItem(R.drawable.geo,"Najdi ma");
+        drawerItem[5] = new DrawerItem(R.drawable.about,"Profil");
         
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, R.layout.drawerlist_row, drawerItem);
         // Setting event listener for the drawer
@@ -191,10 +198,6 @@ public class Index extends  FragmentActivity {
         //drawerListView.setAdapter(new ArrayAdapter<String>(this,
           //      R.layout.drawer_listview_item, drawerListViewItems));
          
-        MemoryStorage coup = new MemoryStorage(this);
-        //coup.addCoupon(new Coupon("10% Zlava na arasidy",0,1));
-        //coup.addCoupon(new Coupon("20% zlava na feferony",0,1));
-        Log.d("DB", Integer.toString(coup.getAllCoupons().size()));
         new HttpAsyncTask().execute("http://hmkcode.appspot.com/rest/controller/get.json");
         firstTime = false;
         //adding data to the coupon structure
@@ -303,10 +306,37 @@ public class Index extends  FragmentActivity {
         return super.onOptionsItemSelected(item);
     }
     
+    public void loadDatabase()
+    {
+    	 MemoryStorage coup = new MemoryStorage(this);
+    	 UserInformation.setMemory(coup);
+    	 //ak je prazdna databaza tak sa vlozia nove kupony
+    	 if(coup.isDatabaseEmpty())
+    	 {
+         coup.addCoupon(new Coupon("Vikendovy pobyt v hoteli Kempinsky Moskva","It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",0,1,"99"));
+         coup.addCoupon(new Coupon("20% zlava na feferony","blablabla blabla bla sladkaslksldas asldk aslk a",0,1,"23"));
+         coup.addCoupon(new Coupon("30% Zlava na arasidy","blablabla blabla bla sladkaslksldas asldk aslk a",0,1,"53"));
+         coup.addCoupon(new Coupon("40% zlava na feferony","blablabla blabla bla sladkaslksldas asldk aslk a",0,1,"98"));
+         coup.addCoupon(new Coupon("50% Zlava na arasidy","blablabla blabla bla sladkaslksldas asldk aslk a",0,1,"12"));
+         coup.addCoupon(new Coupon("60% zlava na feferony","blablabla blabla bla sladkaslksldas asldk aslk a",0,1,"23"));
+         coup.addCoupon(new Coupon("70% Zlava na arasidy","blablabla blabla bla sladkaslksldas asldk aslk a",0,1,"77"));
+         coup.addCoupon(new Coupon("80% zlava na feferony","blablabla blabla bla sladkaslksldas asldk aslk a",0,1,"12"));
+         coup.addCoupon(new Coupon("90% Zlava na arasidy","blablabla blabla bla sladkaslksldas asldk aslk a",0,1,"90"));
+         coup.addCoupon(new Coupon("100% zlava na feferony","blablabla blabla bla sladkaslksldas asldk aslk a",0,1,"66"));
+         Log.d("DB", Integer.toString(coup.getAllCoupons().size()));
+    	 }
+    	 //nacitanie vsetkych kuponov!
+    	 CouponSet.setCoupons(coup.getAllCoupons());
+         Log.d("DB", Integer.toString(coup.getAllCoupons().size()));
+    	 
+    }
+    
     //po kliknuti na item z drawera
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
 
-        @Override
+        private static final String TAG_FRAGMENT = "index";
+
+		@Override
         public void onItemClick(AdapterView parent, View view, int position,long id) {
           
            // Highlight the selected item, update the title, and close the drawer
@@ -320,7 +350,8 @@ public class Index extends  FragmentActivity {
            drawerLayout.closeDrawer(drawerListView);
            
         }
-        
+		//ak sa
+
         //zobrazenie noveho fragmentu
         void showLayout(int position)
         {
@@ -328,31 +359,43 @@ public class Index extends  FragmentActivity {
         	
         	switch(position){
         	case 0:
-            	Coupons_fragment coup = new Coupons_fragment();
-            	ft.replace(R.id.frame_container, coup);
+            	Fragment_coupons coup = new Fragment_coupons();
+            	ft.replace(R.id.frame_container, coup, TAG_FRAGMENT);
             	ft.addToBackStack(null);
             	ft.commit();
             	//addListenerOnButton();
             	//setButtons();
                 break;
         	case 1:
-        		Rules_fragment rules = new Rules_fragment();
+        		Fragment_rulez rules = new Fragment_rulez();
                 ft.replace(R.id.frame_container, rules);
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
         	case 2:
-                About_fragment about = new About_fragment();
+                Fragment_about about = new Fragment_about();
                 ft.replace(R.id.frame_container, about);
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
         	case 3:
-        		Info_fragment info = new Info_fragment();
+        		Fragment_info info = new Fragment_info();
                 ft.replace(R.id.frame_container, info);
                 ft.addToBackStack(null);
                 ft.commit();
-        		
+                break;
+        	case 4:
+        		Intent intent = new Intent(Index.this, Fragment_map.class);
+				//Bundle b = new Bundle();
+				//b.putInt("login", 0);
+				//intent.putExtras(b); //Put your id to your next Intent
+				startActivity(intent);
+                break;
+        	case 5:
+        		Fragment_profil profil = new Fragment_profil();
+                ft.replace(R.id.frame_container, profil);
+                ft.addToBackStack(null);
+                ft.commit();
         } 
         }
     }   

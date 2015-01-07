@@ -1,13 +1,12 @@
 
-<RelativeLayout 
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/openCoupon"
     tools:context="com.hotcoupons.activity.ActivityFullscreen"
     tools:ignore="MergeRootFrame" >
-
 
     <ScrollView
         android:id="@+id/scrollView1"
@@ -25,17 +24,17 @@
                 android:id="@+id/ImageButton1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/billa"
                 android:scaleType="fitXY"
-                android:src="@drawable/billa" />
+                android:background="@drawable/cupon_1"
+                android:src="@drawable/cupon_1" />
 
             <ImageButton
                 android:id="@+id/ImageButton2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/billa"
+                android:background="@drawable/cupon_2"
                 android:scaleType="fitXY"
-                android:src="@drawable/billa" />
+                android:src="@drawable/cupon_2" />
 
             <ImageButton
                 android:id="@+id/ImageButton3"
@@ -100,6 +99,7 @@
                 android:background="@drawable/billa"
                 android:scaleType="fitXY" />
         </LinearLayout>
+
     </ScrollView>
 
     <ImageView
