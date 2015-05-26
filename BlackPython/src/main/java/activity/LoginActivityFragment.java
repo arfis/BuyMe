@@ -83,7 +83,7 @@ public class LoginActivityFragment extends Fragment {
 		uiHelper = new UiLifecycleHelper(getActivity(), callback);
 		uiHelper.onCreate(savedInstanceState);
 		this.context = getActivity().getApplicationContext();
-		GPSManager.turnGPSOn(context);
+		//GPSManager.turnGPSOn(context);
 		SharedPreferencesManager.init(context);
 	}
 

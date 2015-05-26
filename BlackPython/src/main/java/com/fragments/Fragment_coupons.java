@@ -41,12 +41,14 @@ public class Fragment_coupons extends Fragment{
 
 		if(type == 1) {
 			this.getActivity().setTitle("Hot Coupons");
-			for (Coupon coupon : CouponSet.getCoupons()) {
-				if (coupon.isUsed() == 0) {
-					Activity activity = getActivity();
-					dataCoupons.add(coupon);
-					CouponsListAdapter couponsList = new CouponsListAdapter(activity, dataCoupons,getActivity());
-					couponPage.setAdapter(couponsList);
+			if(CouponSet.getCoupons() != null) {
+				for (Coupon coupon : CouponSet.getCoupons()) {
+					if (coupon.isUsed() == 0) {
+						Activity activity = getActivity();
+						dataCoupons.add(coupon);
+						CouponsListAdapter couponsList = new CouponsListAdapter(activity, dataCoupons, getActivity());
+						couponPage.setAdapter(couponsList);
+					}
 				}
 			}
 		}
