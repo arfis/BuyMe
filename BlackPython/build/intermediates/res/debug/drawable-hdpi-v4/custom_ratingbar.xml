@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-<item android:id="@+android:id/background"
-android:drawable="@drawable/pep" />
-    <item android:id="@+android:id/secondaryProgress"
-android:drawable="@drawable/pep" />
-    <item android:id="@+android:id/progress"
-android:drawable="@drawable/pepful" />
-</layer-list><!-- From: file:/C:/Android/Obchody/blackPython/src/main/res/drawable-hdpi/custom_ratingbar.xml -->

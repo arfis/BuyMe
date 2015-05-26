@@ -1,0 +1,7 @@
+BlackPython/build/*
+facebookSDK/build/*
+.idea/*
+build/*
+BlackPython/blackPython.iml
+BuyMe.iml
+facebookSDK/facebookSDK.iml
