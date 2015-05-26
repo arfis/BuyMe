@@ -12,5 +12,5 @@ build/*
 .idea/*
 local.properties
 
-#gradle files
-.gradle/2.2.1/taskArtifacts/*
+#gradle settings
+.gradle/*
