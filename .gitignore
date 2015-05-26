@@ -1,0 +1,16 @@
+#BlackPython files
+BlackPython/build/*
+BlackPython/blackPython.iml
+
+#FacebookSDK files
+facebookSDK/build/*
+facebookSDK/facebookSDK.iml
+
+#root files
+BuyMe.iml
+build/*
+.idea/*
+local.properties
+
+#gradle files
+.gradle/2.2.1/taskArtifacts/*
