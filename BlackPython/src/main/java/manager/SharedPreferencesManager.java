@@ -7,6 +7,7 @@ import android.util.Log;
 public class SharedPreferencesManager {
     static String TAG_LOG  = "LoggedFB";
     static String TAG_COUPONS_USED = "UsedCoupons";
+    static String TAG_LOCATION = "location";
 
     static SharedPreferences sharedPrefs;
     static Context context;
@@ -15,6 +16,15 @@ public class SharedPreferencesManager {
         context = cx;
         if(sharedPrefs == null)
             sharedPrefs = context.getSharedPreferences("wifi", context.MODE_PRIVATE);
+    }
+
+    public static void setLocationSetting(boolean location){
+        SharedPreferences.Editor edit = sharedPrefs.edit();
+        edit.putBoolean(TAG_LOCATION,location).commit();
+    }
+
+    public static boolean getLocationSetting(){
+        return sharedPrefs.getBoolean(TAG_LOCATION,true);
     }
 
     public static void setLoggedMethod(int facebook){

@@ -33,5 +33,6 @@
     <string name="o_nas"> Sme mladi ludia, ktory sa rozhodli vytvorit program</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+    <string name="location">Zapnutie kontroly lokácie</string>
 
 </resources>

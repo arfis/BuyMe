@@ -3,9 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.blackpython.Index" >
     <item
+        android:title="golden"
         android:id="@+id/action_cart"
         android:icon="@drawable/about"
         android:orderInCategory="100"
-        android:showAsAction="always"/>
+        app:showAsAction="always"/>
+    <item
+        android:title="settings"
+        android:id="@+id/settings"
+        android:icon="@drawable/geo"
+        android:orderInCategory="99"
+        app:showAsAction="always"/>
 </menu>
 

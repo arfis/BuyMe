@@ -15,17 +15,31 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.plus.Plus;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class LoginActivity extends FragmentActivity {
+public class LoginActivity extends FragmentActivity implements
+		GoogleApiClient.ConnectionCallbacks,
+		GoogleApiClient.OnConnectionFailedListener{
 	LoginActivityFragment loginf;
-	Button buttonfreelogin;
+	private GoogleApiClient mGoogleApiClient;
+
 	private static final String TAG = "MainFragment";
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 
+		mGoogleApiClient = new GoogleApiClient.Builder(this)
+				.addConnectionCallbacks(this)
+				.addOnConnectionFailedListener(this)
+				.addApi(Plus.API)
+				.addScope(new Scope("profile"))
+				.build();
 		// Add code to print out the key hash
 		try {
 			PackageInfo info = getPackageManager().getPackageInfo(
@@ -60,4 +74,18 @@ public class LoginActivity extends FragmentActivity {
 	}
 
 
+	@Override
+	public void onConnected(Bundle bundle) {
+
+	}
+
+	@Override
+	public void onConnectionSuspended(int i) {
+
+	}
+
+	@Override
+	public void onConnectionFailed(ConnectionResult connectionResult) {
+
+	}
 }

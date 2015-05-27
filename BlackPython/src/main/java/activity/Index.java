@@ -3,22 +3,22 @@ package activity;
 import java.util.ArrayList;
 
 import async.LoadData;
-import data.CouponSet;
 import data.DrawerItem;
-import data.MemoryStorage;
 import data.UserInformation;
+
+import com.andexert.library.RippleView;
 import com.facebook.widget.ProfilePictureView;
 import com.fragments.Fragment_about;
 import com.fragments.Fragment_coupons;
 import com.fragments.Fragment_info;
 import com.fragments.Fragment_profil;
 import com.fragments.Fragment_rulez;
-import com.gui.ButtonCoupon;
 import com.blackpython.R;
 import utils.LoggingTypes;
 
 import adapter.DrawerListAdapter;
-import android.support.v4.app.ActionBarDrawerToggle;
+
+import android.app.LauncherActivity;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -29,28 +29,34 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 import fakeData.FalsePoints;
 import manager.SharedPreferencesManager;
 import service.LocationService;
-import fakeData.FalseCoupons;
 
-public class Index extends  FragmentActivity {
+public class Index extends ActionBarActivity {
 
     private final static String TAG_FRAGMENT = "INDEX";
     int unUsed;
     ArrayList<DrawerItem> data = new ArrayList();
     private DrawerLayout drawerLayout;
-    private ListView drawerListView;
     private ActionBarDrawerToggle mDrawerToggle;
+    private TableRow coupon, info, about, map, rules;
+    RippleView rw,rw2,rw3,rw4,rw5;
     Context context;
 
 
@@ -75,65 +81,45 @@ public class Index extends  FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.context = getApplicationContext();
-        loadDatabase();
-        new FalsePoints();
-        //overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
-        startService(new Intent(this.getApplicationContext(), LocationService.class));
-        SharedPreferencesManager.init(getApplicationContext());
-        //    if (savedInstanceState == null) {
-
         setContentView(R.layout.activity_index);
 
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
-        //actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(getResources().getString((R.color.red)))));
-        //potialto, posledny riadok je len pre novu api ice cream sandwich
+        rw = (RippleView) findViewById(R.id.more);
+        rw2 = (RippleView) findViewById(R.id.more2);
+        rw3 = (RippleView) findViewById(R.id.more3);
+        rw4 = (RippleView) findViewById(R.id.more5);
+        rw5 = (RippleView) findViewById(R.id.more6);
+
+        coupon = (TableRow) findViewById(R.id.coupon);
+        about = (TableRow) findViewById(R.id.about);
+        info = (TableRow) findViewById(R.id.info);
+        rules = (TableRow) findViewById(R.id.rulez);
+        map = (TableRow) findViewById(R.id.map);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        // Creating a ToggleButton for NavigationDrawer with drawer event listener
-        mDrawerToggle = new ActionBarDrawerToggle(this,
-                drawerLayout,
-                R.drawable.ic_drawer, //pridanie novej ikonky
-                R.string.drawer_open,
-                R.string.drawer_close){
 
-            /** Called when drawer is closed */
-            public void onDrawerClosed(View view) {
-                //highlightSelectedCountry();
-                supportInvalidateOptionsMenu();
-            }
+        loadDatabase();
+        SharedPreferencesManager.init(getApplicationContext());
 
-            /** Called when a drawer is opened */
-            public void onDrawerOpened(View drawerView) {
-                //getSupportActionBar().setTitle("Select a Country");
-                supportInvalidateOptionsMenu();
-            }
-        };
-        //adding data to the coupon structure
+        new FalsePoints();
+        if(SharedPreferencesManager.getLocationSetting()) {
+            startService(new Intent(this.getApplicationContext(), LocationService.class));
+        }
+
+        setSupportActionBar(toolbar);
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,0,0);
+        drawerLayout.setDrawerListener(mDrawerToggle);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        mDrawerToggle.syncState();
+
         drawDrawer();
-        drawerListView.setOnItemClickListener(new DrawerItemClickListener());
     }
 
     public void drawDrawer()
     {
-        String[] mTestArray =   getResources().getStringArray(R.array.items);
-        if(data.size()==0)
-        {
-            //pridanie poloziek do laveho vysuvacieho menu
-            data.add(new DrawerItem(R.drawable.coup,mTestArray[0],unUsed));
-            data.add(new DrawerItem(R.drawable.rulez,mTestArray[1],0));
-            data.add(new DrawerItem(R.drawable.about,mTestArray[2],0));
-            data.add(new DrawerItem(R.drawable.info,mTestArray[3],0));
-            data.add(new DrawerItem(R.drawable.geo,mTestArray[4],0));
-        }
-
-        DrawerListAdapter adapter = new DrawerListAdapter(this, R.layout.drawerlist_row, data);
-        // Setting event listener for the drawer
-        drawerLayout.setDrawerListener(mDrawerToggle);
-        // get ListView defined in activity_main.xml
-        drawerListView = (ListView) findViewById(R.id.left_drawer);
-        // Set the adapter for the list view
-        drawerListView.setAdapter(adapter);
 
         ProfilePictureView pf = (ProfilePictureView) findViewById(R.id.profilePictureView1);
 
@@ -163,21 +149,33 @@ public class Index extends  FragmentActivity {
         switch (item.getItemId()) {
 
             case R.id.action_cart:
-                Toast.makeText(this, "klikol si na ikonku hore", Toast.LENGTH_SHORT)
-                        .show();
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                Fragment_coupons coup = new Fragment_coupons();
-                Bundle bundle = new Bundle();
-                bundle.putInt("TYPE", 2);
-                coup.setArguments(bundle);
-                ft.replace(R.id.frame_container, coup, TAG_FRAGMENT);
-                ft.addToBackStack(null);
-                ft.commit();
+                showGolden();
+                break;
+            case R.id.settings:
+                showSettings();
                 break;
             default:
                 break;
         }
         return true;
+    }
+
+    public void showSettings(){
+        Intent settings = new Intent(context,Settings.class);
+        startActivity(settings);
+    }
+
+    public void showGolden(){
+        Toast.makeText(this, "klikol si na ikonku hore", Toast.LENGTH_SHORT)
+                .show();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment_coupons coup = new Fragment_coupons();
+        Bundle bundle = new Bundle();
+        bundle.putInt("TYPE", 2);
+        coup.setArguments(bundle);
+        ft.replace(R.id.frame_container, coup, TAG_FRAGMENT);
+        ft.addToBackStack(null);
+        ft.commit();
     }
 
     @Override
@@ -192,6 +190,89 @@ public class Index extends  FragmentActivity {
     {
         super.onResume();
         updateCount();
+
+    }
+    public void showLayout(View view)
+    {
+        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        coupon.setBackgroundResource(R.color.greyDark);
+        rules.setBackgroundResource(R.color.greyDark);
+        about.setBackgroundResource(R.color.greyDark);
+        info.setBackgroundResource(R.color.greyDark);
+        map.setBackgroundResource(R.color.greyDark);
+
+        rw.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
+
+            @Override
+            public void onComplete(RippleView rippleView) {
+                Log.d("Sample", "Ripple completed");
+                drawerLayout.closeDrawers();
+                Fragment_coupons coup = new Fragment_coupons();
+                Bundle bundle = new Bundle();
+                bundle.putInt("TYPE", 1);
+                coup.setArguments(bundle);
+                ft.replace(R.id.frame_container, coup, TAG_FRAGMENT);
+                ft.addToBackStack(null);
+                ft.commit();
+                coupon.setBackgroundResource(R.color.greyLight);
+            }
+
+            });
+
+        rw2.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
+
+            @Override
+            public void onComplete(RippleView rippleView) {
+                Log.d("Sample", "Ripple completed");
+                drawerLayout.closeDrawers();
+                Fragment_rulez frules = new Fragment_rulez();
+                ft.replace(R.id.frame_container, frules);
+                ft.addToBackStack(null);
+                ft.commit();
+                rules.setBackgroundResource(R.color.greyLight);
+            }
+
+        });
+        rw3.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
+
+            @Override
+            public void onComplete(RippleView rippleView) {
+                Log.d("Sample", "Ripple completed");
+                drawerLayout.closeDrawers();
+                Fragment_about fabout = new Fragment_about();
+                ft.replace(R.id.frame_container, fabout);
+                ft.addToBackStack(null);
+                ft.commit();
+                about.setBackgroundResource(R.color.greyLight);
+            }
+
+        });
+        rw4.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
+
+            @Override
+            public void onComplete(RippleView rippleView) {
+                Log.d("Sample", "Ripple completed");
+                drawerLayout.closeDrawers();
+                Fragment_info finfo = new Fragment_info();
+                ft.replace(R.id.frame_container, finfo);
+                ft.addToBackStack(null);
+                ft.commit();
+                info.setBackgroundResource(R.color.greyLight);
+            }
+
+        });
+        rw5.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
+
+            @Override
+            public void onComplete(RippleView rippleView) {
+                Log.d("Sample", "Ripple completed");
+                drawerLayout.closeDrawers();
+                Intent intent = new Intent(Index.this, Map.class);
+                startActivity(intent);
+                map.setBackgroundResource(R.color.greyLight);
+            }
+
+        });
 
     }
 
@@ -215,6 +296,14 @@ public class Index extends  FragmentActivity {
     //adding listeners to the coupons - every image button has got a unique listener
 
     //If there is an icon
+    @Override
+    public void onBackPressed() {
+        if(drawerLayout.isDrawerOpen(Gravity.START| Gravity.LEFT)){
+            drawerLayout.closeDrawers();
+            return;
+        }
+        super.onBackPressed();
+    }
 
     public void loadDatabase()
     {
@@ -267,66 +356,4 @@ public class Index extends  FragmentActivity {
 
     }
 
-    //po kliknuti na item z drawera
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-
-        private static final String TAG_FRAGMENT = "index";
-
-        @Override
-        public void onItemClick(AdapterView parent, View view, int position,long id) {
-            // Highlight the selected item, update the title, and close the drawer
-            // update selected item and title, then close the drawer
-            drawerListView.setItemChecked(position, true);
-            drawerLayout.closeDrawers();
-            //drawerLayout.closeDrawer(Gravity.NO_GRAVITY);
-            setTitle("Hot Coupons");
-
-            showLayout(position);
-
-        }
-        //zobrazenie noveho fragmentu
-        void showLayout(int position)
-        {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-
-            switch(position){
-                case 0:
-                    Fragment_coupons coup = new Fragment_coupons();
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("TYPE", 1);
-                    coup.setArguments(bundle);
-                    ft.replace(R.id.frame_container, coup, TAG_FRAGMENT);
-                    ft.addToBackStack(null);
-                    ft.commit();
-                    break;
-                case 1:
-                    Fragment_rulez rules = new Fragment_rulez();
-                    ft.replace(R.id.frame_container, rules);
-                    ft.addToBackStack(null);
-                    ft.commit();
-                    break;
-                case 2:
-                    Fragment_about about = new Fragment_about();
-                    ft.replace(R.id.frame_container, about);
-                    ft.addToBackStack(null);
-                    ft.commit();
-                    break;
-                case 3:
-                    Fragment_info info = new Fragment_info();
-                    ft.replace(R.id.frame_container, info);
-                    ft.addToBackStack(null);
-                    ft.commit();
-                    break;
-                case 4:
-                    Intent intent = new Intent(Index.this, Map.class);
-                    startActivity(intent);
-                    break;
-                case 5:
-                    Fragment_profil profil = new Fragment_profil();
-                    ft.replace(R.id.frame_container, profil);
-                    ft.addToBackStack(null);
-                    ft.commit();
-            }
-        }
-    }
 }

@@ -3,7 +3,7 @@ package com.fragments;
 import com.blackpython.R;
 import com.blackpython.R.id;
 import com.blackpython.R.layout;
-import com.data.UserInformation;
+import data.UserInformation;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;

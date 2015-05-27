@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.zip.Inflater;
 
 import com.blackpython.R;
-import com.data.Places;
+import data.Places;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-import com.utils.GeoMath;
-import com.utils.MLocationListener;
+import utils.GeoMath;
+import utils.MLocationListener;
 
 import fakeData.FalsePoints;
 
@@ -66,17 +66,11 @@ public class Map extends Activity {
 	    static private MapController   mMapController;
 	    private LayoutInflater 	inflater;
 	    private TextView 		tMap;
-	    private Location 		location;
 	    private ItemizedOverlay<OverlayItem> mMyLocationOverlay;
 	    private ResourceProxy 	mResourceProxy;
-	    double 					latitude, longitude;
 	    static GeoPoint 				myLocation;
 	    List<Overlay> 			mOverlays;
 	    ArrayList<OverlayItem> 	items;
-		GoogleApiClient mGoogleApiClient;
-		ProgressDialog dialog;
-
-	private boolean canGetLocation;
 	    
 	    @Override
 	    public void onCreate(Bundle savedInstanceState) {
@@ -110,8 +104,8 @@ public class Map extends Activity {
 				fillMapData();
 				setIconsOnMap();
 			}
-				Intent intent = new Intent(this, LocationService.class);
-				startService(intent);
+				//Intent intent = new Intent(this, LocationService.class);
+				//startService(intent);
 
 	       
 	    }

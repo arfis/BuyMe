@@ -31,10 +31,10 @@ import android.widget.RatingBar.OnRatingBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.blackpython.R;
-import com.data.Coupon;
-import com.data.CouponSet;
-import com.data.MemoryStorage;
-import com.data.UserInformation;
+import data.Coupon;
+import data.CouponSet;
+import data.MemoryStorage;
+import data.UserInformation;
 import com.fragments.Fragment_coupons;
 
 import manager.SharedPreferencesManager;
@@ -58,8 +58,7 @@ public class ActivityFullscreen extends Activity implements AnimationListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle b = getIntent().getExtras();
-		getActionBar()
-				.hide();
+
         db = UserInformation.getMemory();
         
         value = b.getInt("pressed_coupon");

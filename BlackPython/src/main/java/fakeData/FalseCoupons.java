@@ -3,10 +3,10 @@ package fakeData;
 import android.content.Context;
 import android.util.Log;
 
-import com.data.Coupon;
-import com.data.MemoryStorage;
-import com.data.UserInformation;
-import com.utils.PictureConverter;
+import data.Coupon;
+import data.MemoryStorage;
+import data.UserInformation;
+import utils.PictureConverter;
 
 import java.util.ArrayList;
 import java.util.List;

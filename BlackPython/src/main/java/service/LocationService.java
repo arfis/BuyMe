@@ -3,7 +3,7 @@ package service;
 import org.osmdroid.util.GeoPoint;
 
 import com.blackpython.R;
-import com.utils.GeoMath;
+import utils.GeoMath;
 
 import activity.Index;
 import activity.Map;

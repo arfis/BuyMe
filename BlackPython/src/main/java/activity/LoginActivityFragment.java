@@ -5,10 +5,13 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Signature;
 import java.util.Arrays;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.media.browse.MediaBrowser;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Base64;
@@ -23,13 +26,14 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import async.LoadData;
 import manager.GPSManager;
 import manager.SharedPreferencesManager;
 
 import com.blackpython.R;
-import com.data.UserInformation;
+import data.UserInformation;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
@@ -40,16 +44,31 @@ import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 import com.facebook.widget.ProfilePictureView;
-import com.utils.HotCoupons;
-import com.utils.LoggingTypes;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.plus.Plus;
 
-public class LoginActivityFragment extends Fragment {
+import utils.HotCoupons;
+import utils.LoggingTypes;
+
+public class LoginActivityFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
+		GoogleApiClient.OnConnectionFailedListener{
 	ImageButton buttonfreelogin;
 	LoginButton authButton;
-	ProfilePictureView pf;
+	SignInButton googleLogin;
 	Context context;
+	Activity activity;
 	Animation fadeIn;
+	private boolean mIntentInProgress = false;
+	private boolean mSignInClicked = false;
 
+	/* Request code used to invoke sign in user interactions. */
+	private static final int RC_SIGN_IN = 0;
+
+	/* Client used to interact with Google APIs. */
+	private GoogleApiClient mGoogleApiClient;
 	private static final String TAG = "LoginActivityFragment";
 	private UiLifecycleHelper uiHelper;
 	private Session.StatusCallback callback = new Session.StatusCallback() {
@@ -83,6 +102,7 @@ public class LoginActivityFragment extends Fragment {
 		uiHelper = new UiLifecycleHelper(getActivity(), callback);
 		uiHelper.onCreate(savedInstanceState);
 		this.context = getActivity().getApplicationContext();
+		activity = getActivity();
 		//GPSManager.turnGPSOn(context);
 		SharedPreferencesManager.init(context);
 	}
@@ -109,21 +129,107 @@ public class LoginActivityFragment extends Fragment {
 		buttonfreelogin = (ImageButton) view.findViewById(R.id.buttonfreelogin);
 		buttonfreelogin.setAnimation(fadeIn);
 
+		googleLogin = (SignInButton) view.findViewById(R.id.google);
+		buttonfreelogin.setAnimation(fadeIn);
+
 		addListenerOnButton(view);
+		mGoogleApiClient = new GoogleApiClient.Builder(context)
+				.addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+
+
+					@Override
+					public void onConnected(Bundle connectionHint) {
+						// We've resolved any connection errors.  mGoogleApiClient can be used to
+						// access Google APIs on behalf of the user.
+						mSignInClicked = false;
+
+						Toast.makeText(context, "login sucessfull", Toast.LENGTH_SHORT).show();
+						SharedPreferencesManager.setLoggedMethod(LoggingTypes.FACEBOOK.getIntValue());
+						startFirstActivity();
+					}
+
+					@Override
+					public void onConnectionSuspended(int i) {
+
+					}
+				})
+				.addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
+					@Override
+					public void onConnectionFailed(ConnectionResult result) {
+						if (!mIntentInProgress && result.hasResolution()) {
+							try {
+								mIntentInProgress = true;
+								result.startResolutionForResult(activity, RC_SIGN_IN);
+							} catch (IntentSender.SendIntentException e) {
+								// The intent was canceled before it was sent.  Return to the default
+								// state and attempt to connect to get an updated ConnectionResult.
+								mIntentInProgress = false;
+								mGoogleApiClient.connect();
+							}
+						}
+					}
+				})
+				.addApi(Plus.API)
+				.addScope(new Scope("profile"))
+				.build();
 		return view;
 	}
 
 	public void addListenerOnButton(View v) {
+
 		buttonfreelogin.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				SharedPreferencesManager.setLoggedMethod(LoggingTypes.FREE.getIntValue());
-				  startFirstActivity();
+				startFirstActivity();
 				//new LoadData(context).execute();
+			}
+		});
+		googleLogin.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				if(view.getId() == R.id.google && !mGoogleApiClient.isConnecting()) {
+					mSignInClicked = true;
+					mGoogleApiClient.connect();
+				}
 			}
 		});
 	}
 
+	@Override
+	public void onStart() {
+		super.onStart();
+		//mGoogleApiClient.connect();
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		//mGoogleApiClient.disconnect();
+	}
+
+	@Override
+	public void onConnectionFailed(ConnectionResult result) {
+		if (!mIntentInProgress ) {
+			if(mSignInClicked && result.hasResolution()) {
+				try {
+					mIntentInProgress = true;
+					result.startResolutionForResult(activity, RC_SIGN_IN);
+				} catch (IntentSender.SendIntentException e) {
+					// The intent was canceled before it was sent.  Return to the default
+					// state and attempt to connect to get an updated ConnectionResult.
+					mIntentInProgress = false;
+					mGoogleApiClient.connect();
+				}
+			}
+		}
+	}
+
+	private void loginFacebook(){
+		Intent google = new Intent(context,GoogleLogin.class);
+		startActivity(google);
+
+	}
 	// zmena stavu prihlasenia
 	private void onSessionStateChange(Session session, SessionState state,
 			Exception exception) {
@@ -179,7 +285,17 @@ public class LoginActivityFragment extends Fragment {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		uiHelper.onActivityResult(requestCode, resultCode, data);
+		if (requestCode == RC_SIGN_IN) {
+				mSignInClicked = false;
+
+			mIntentInProgress = false;
+
+			if (!mGoogleApiClient.isConnected()) {
+				mGoogleApiClient.reconnect();
+			}
+		}
+		else
+			uiHelper.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override
@@ -198,5 +314,17 @@ public class LoginActivityFragment extends Fragment {
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		uiHelper.onSaveInstanceState(outState);
+	}
+
+	@Override
+	public void onConnected(Bundle bundle) {
+		mSignInClicked = false;
+		Toast.makeText(context, "User is connected!", Toast.LENGTH_LONG).show();
+
+	}
+
+	@Override
+	public void onConnectionSuspended(int i) {
+
 	}
 }

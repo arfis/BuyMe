@@ -7,7 +7,7 @@ import org.osmdroid.util.GeoPoint;
 
 import android.graphics.Point;
 
-import com.data.Places;
+import data.Places;
 
 public class FalsePoints {
 

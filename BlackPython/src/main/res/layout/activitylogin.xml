@@ -37,12 +37,20 @@
             android:id="@+id/buttonfreelogin"
             android:layout_width="220dp"
             android:layout_height="50dp"
-            android:layout_below="@+id/authButton"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="27dp"
             android:background="@drawable/menu_bez"
-            android:src="@drawable/abc_ab_share_pack_holo_dark" />
+            android:src="@drawable/abc_ab_share_pack_holo_dark"
+            android:layout_below="@+id/google"
+            android:layout_centerHorizontal="true" />
 
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/google"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/authButton"
+            android:layout_alignLeft="@+id/authButton"
+            android:layout_alignStart="@+id/authButton"
+            android:layout_alignRight="@+id/authButton"
+            android:layout_alignEnd="@+id/authButton" />
     </RelativeLayout>
 
 </LinearLayout>

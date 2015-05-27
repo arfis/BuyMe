@@ -21,10 +21,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.blackpython.R;
-import com.data.Coupon;
-import com.data.CouponSet;
-import com.data.DrawerItem;
-import com.data.UserInformation;
+import data.Coupon;
+import data.CouponSet;
+import data.DrawerItem;
+import data.UserInformation;
 
 public class CouponsListAdapter extends ArrayAdapter<Coupon>{
 

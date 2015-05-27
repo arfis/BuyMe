@@ -6,10 +6,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RadioGroup;
+import android.widget.TextView;
+
 import com.blackpython.R;
-import com.data.Coupon;
-import com.data.CouponSet;
+import data.Coupon;
+import data.CouponSet;
 import java.util.ArrayList;
 import adapter.CouponsListAdapter;
 import fakeData.FalseCoupons;
@@ -31,7 +35,12 @@ public class Fragment_coupons extends Fragment{
 		Bundle bundle = this.getArguments();
 		type = bundle.getInt("TYPE", -1);
 		setCouponList(type);
-
+		ImageView emptyView = new ImageView(this.getActivity().getApplicationContext());
+		emptyView.setLayoutParams(new ViewGroup.LayoutParams(RadioGroup.LayoutParams.FILL_PARENT, RadioGroup.LayoutParams.FILL_PARENT));
+		emptyView.setImageDrawable(this.getActivity().getApplicationContext().getResources().getDrawable(R.drawable.sold));
+		emptyView.setVisibility(View.GONE);
+		((ViewGroup)couponPage.getParent()).addView(emptyView);
+		couponPage.setEmptyView(emptyView);
 		return v;
     }
     public void setCouponList(int type)
