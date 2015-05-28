@@ -1,97 +1,155 @@
 package activity;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Toast;
-
+import android.util.Log;
 import com.blackpython.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.plus.Plus;
+import com.google.android.gms.plus.model.people.Person;
+
+import data.UserInformation;
+import utils.LoggingTypes;
 
 /**
  * Created by Snow on 5/27/2015.
  */
 public class GoogleLogin extends Activity implements
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-        View.OnClickListener {
+        GoogleApiClient.OnConnectionFailedListener
+{
 
-    boolean mIntentInProgress = false;
-    /* Request code used to invoke sign in user interactions. */
+    private static final int STATE_DEFAULT = 0;
+    private static final int STATE_SIGN_IN = 1;
+    private static final int STATE_IN_PROGRESS = 2;
+
     private static final int RC_SIGN_IN = 0;
 
-    /* Client used to interact with Google APIs. */
     private GoogleApiClient mGoogleApiClient;
 
+    private int mSignInProgress;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(Plus.API)
-                .addScope(new Scope("profile"))
-                .build();
+        mGoogleApiClient = buildGoogleApiClient();
 
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
+        mSignInProgress = STATE_SIGN_IN;
         mGoogleApiClient.connect();
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        mGoogleApiClient.disconnect();
-    }
+    private GoogleApiClient buildGoogleApiClient() {
+        GoogleApiClient.Builder builder = new GoogleApiClient.Builder(this.getApplicationContext(), this, this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(Plus.API, Plus.PlusOptions.builder().build())
+                .addScope(Plus.SCOPE_PLUS_PROFILE);
 
-    @Override
-    public void onConnectionFailed(ConnectionResult result) {
-        if (!mIntentInProgress && result.hasResolution()) {
-            try {
-                mIntentInProgress = true;
-                result.startResolutionForResult(this, RC_SIGN_IN);
-            } catch (IntentSender.SendIntentException e) {
-                // The intent was canceled before it was sent.  Return to the default
-                // state and attempt to connect to get an updated ConnectionResult.
-                mIntentInProgress = false;
-                mGoogleApiClient.connect();
-            }
-        }
+        return builder.build();
     }
 
     @Override
     public void onConnected(Bundle connectionHint) {
 
-        // access Google APIs on behalf of the user.
+        Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+        String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
+
+        //if it is a google+ account currentPerson returns a value, else it is null
+        if (currentPerson != null) {
+            String name = currentPerson.getDisplayName();
+            UserInformation.setGoogleUserImage(currentPerson.getImage().getUrl());
+            UserInformation.setName(name);
+        }
+
+        UserInformation.setEmail(email);
+        UserInformation.setLoggedMethod(LoggingTypes.GMAIL.getIntValue());
+        UserInformation.setGoogleApiClient(mGoogleApiClient);
+        startMainActivity();
+        mSignInProgress = STATE_DEFAULT;
+    }
+
+    private void startMainActivity()
+    {
+        Intent intent = new Intent(this,Index.class);
+        startActivity(intent);
+        this.overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
+        this.finish();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    protected PendingIntent mSignInIntent;
+    private int mSignInError;
+    private String TAG = "G+";
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        Log.i(TAG, "onConnectionFailed: ConnectionResult.getErrorCode() = "
+                + result.getErrorCode());
+
+        if (result.getErrorCode() == ConnectionResult.API_UNAVAILABLE) {
+            Log.w(TAG, "API Unavailable.");
+        } else if (mSignInProgress != STATE_IN_PROGRESS) {
+
+            mSignInIntent = result.getResolution();
+            mSignInError = result.getErrorCode();
+
+            if (mSignInProgress == STATE_SIGN_IN && result.hasResolution()) {
+
+                try {
+
+                    mSignInProgress = STATE_IN_PROGRESS;
+                    result.startResolutionForResult(this, RC_SIGN_IN);
+
+                } catch (IntentSender.SendIntentException e) {
+                    Log.i(TAG, "Sign in intent could not be sent: "
+                            + e.getLocalizedMessage());
+                    mSignInProgress = STATE_SIGN_IN;
+                    mGoogleApiClient.connect();
+                }
+            }
+        }
+
+        onSignedOut();
+    }
+
+    private void onSignedOut()
+    {
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode,
+                                 Intent data) {
+        switch (requestCode) {
+            case RC_SIGN_IN:
+                if (resultCode == RESULT_OK) {
+                    // If the error resolution was successful we should continue
+                    // processing errors.
+                    mSignInProgress = STATE_SIGN_IN;
+                } else {
+                    // If the error resolution was not successful or the user canceled,
+                    // we should stop processing errors.
+                    mSignInProgress = STATE_DEFAULT;
+                }
+                Log.d("GOOGLE API: ","result code - "+resultCode);
+                if (!mGoogleApiClient.isConnecting()) {
+                    // If Google Play services resolved the issue with a dialog then
+                    // onStart is not called so we need to re-attempt connection here.
+                    mGoogleApiClient.connect();
+                }
+                break;
+        }
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        mGoogleApiClient.connect();
     }
-
-    @Override
-    public void onClick(View view) {
-
-    }
-    @Override
-    protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
-        if (requestCode == RC_SIGN_IN) {
-            mIntentInProgress = false;
-
-            if (!mGoogleApiClient.isConnected()) {
-                mGoogleApiClient.reconnect();
-            }
-        }
-    }
-
 }

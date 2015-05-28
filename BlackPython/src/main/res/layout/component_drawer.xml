@@ -227,19 +227,19 @@
             android:id="@+id/drawerName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="24dp"
             android:text="Medium Text"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
 
         <com.facebook.widget.ProfilePictureView
             android:id="@+id/profilePictureView1"
             android:layout_width="70dp"
             android:layout_height="100dp"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="35dp"
-            android:layout_toRightOf="@+id/drawerName">
+            android:layout_toLeftOf="@+id/drawerName"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/drawerName">
         </com.facebook.widget.ProfilePictureView>
 
         <TextView
@@ -248,9 +248,28 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Medium Text"
             android:id="@+id/usedCoupons"
-            android:layout_below="@+id/drawerName"
-            android:layout_toLeftOf="@+id/profilePictureView1"
-            android:layout_toStartOf="@+id/profilePictureView1" />
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Odhlásiť sa"
+            android:id="@+id/logOutButton"
+            android:layout_below="@+id/profilePictureView1"
+            android:layout_toLeftOf="@+id/drawerName"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/userPicture"
+            android:layout_toRightOf="@+id/profilePictureView1"
+            android:layout_alignRight="@+id/drawerName"
+            android:layout_alignEnd="@+id/drawerName"
+            android:layout_below="@+id/drawerName" />
 
     </RelativeLayout>
 

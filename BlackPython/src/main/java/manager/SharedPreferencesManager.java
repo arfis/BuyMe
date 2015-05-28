@@ -11,6 +11,8 @@ public class SharedPreferencesManager {
     static String TAG_LOCATION = "location";
     static String TAG_EMAIL = "email";
     static String TAG_NEW = "new";
+    static String TAG_NAME = "name";
+    static String TAG_FB_ID = "fbID";
 
     static SharedPreferences sharedPrefs;
     static Context context;
@@ -34,6 +36,29 @@ public class SharedPreferencesManager {
         int count = sharedPrefs.getInt(TAG_NEW, 0);
         SharedPreferences.Editor edit = sharedPrefs.edit();
         edit.putInt(TAG_NEW, count--).commit();
+    }
+
+
+    public static void setFbID(String id)
+    {
+        SharedPreferences.Editor edit = sharedPrefs.edit();
+        edit.putString(TAG_FB_ID, id).commit();
+    }
+
+    public static String getFbID()
+    {
+        return sharedPrefs.getString(TAG_FB_ID, "");
+    }
+
+    public static void setName(String name)
+    {
+        SharedPreferences.Editor edit = sharedPrefs.edit();
+        edit.putString(TAG_NAME, name).commit();
+    }
+
+    public static String getName()
+    {
+        return sharedPrefs.getString(TAG_NAME, "");
     }
 
     public static void setEmail(String Email){
