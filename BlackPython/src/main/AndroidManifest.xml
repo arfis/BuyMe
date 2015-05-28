@@ -67,7 +67,8 @@
             android:name="activity.Map"
             android:configChanges="orientation|screenSize"
             android:theme="@style/MyTheme"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
             </activity>
         <activity
             android:name="activity.GoogleLogin"
@@ -78,7 +79,8 @@
             android:name="activity.Settings"
             android:configChanges="orientation|screenSize"
             android:theme="@style/MyTheme"
-            android:label="@string/action_settings" >
+            android:label="@string/action_settings"
+            android:screenOrientation="portrait">
         </activity>
 
         <activity

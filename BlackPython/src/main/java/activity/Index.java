@@ -260,11 +260,13 @@ public class Index extends ActionBarActivity {
         TextView newCoupons = (TextView) findViewById(R.id.counter);
         couponsCount.setText("Pocet pouzitych kuponov je: " + SharedPreferencesManager.getUsedCoupons());
         if(SharedPreferencesManager.getNew()>0) {
+            newCoupons.setVisibility(View.VISIBLE);
             newCoupons.setText(SharedPreferencesManager.getNew());
         }
         //TODO: vymazat tieto dva riadky
-        else
-        newCoupons.setText("5");
+        else {
+            newCoupons.setVisibility(View.GONE);
+        }
     }
 
     @Override
