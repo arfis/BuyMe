@@ -5,7 +5,8 @@ package utils;
  */
 public enum LoggingTypes {
     FACEBOOK("Facebook", 0),
-    FREE("Free", 1);
+    FREE("Free", 1),
+    GMAIL("Gmail",2);
 
     private String stringValue;
     private int intValue;

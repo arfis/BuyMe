@@ -31,12 +31,9 @@ public class Settings extends ActionBarActivity {
         context = this.getApplicationContext();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-
-        SharedPreferencesManager.getLocationSetting();
 
         Switch location = (Switch) findViewById(R.id.switch_location);
         location.setChecked(SharedPreferencesManager.getLocationSetting());

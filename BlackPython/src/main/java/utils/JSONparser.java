@@ -7,6 +7,7 @@ import android.util.Log;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
@@ -36,32 +37,39 @@ public class JSONparser {
         UserInformation.setMemory(db);
 
         try {
-            JSONObject mainObject = new JSONObject(results);
+            //JSONObject mainObject = new JSONObject(results);
 
-            int objectSize = mainObject.length();
+            //int objectSize = mainObject.length();
 
-            JSONObject info = mainObject.getJSONObject("information");
 
-            String activated = info.get("activated").toString();
-            String city = info.get("city").toString();
+            //JSONObject info = mainObject.getJSONObject("information");
 
-            JSONArray jsonCoupons = mainObject.getJSONArray("coupons");
+            //String activated = info.get("activated").toString();
+            //String city = info.get("city").toString();
+
+            //JSONArray jsonCoupons = mainObject.getJSONArray("coupons");
             //JSONObject serviceObject = mainObject.getJSONObject("services");
-            int numberCoupons = jsonCoupons.length();
+            //int numberCoupons = jsonCoupons.length();
+            JSONArray jsonCoupons = new JSONArray(results);
+            if(jsonCoupons.length() > 0) {
+               if(!db.isDatabaseEmpty() ) {
+                   db.deleteAllCoupons();
+               }
 
-            if(db.isDatabaseEmpty()) {
-                for (int i = 0; i < numberCoupons; i++) {
+                for (int i = 0; i < jsonCoupons.length(); i++) {
                     Coupon coup = new Coupon();
                     coup.setAbout(((JSONObject) jsonCoupons.get(i)).get("about").toString());
-                    coup.setPermission(Integer.valueOf(((JSONObject) jsonCoupons.get(i)).get("mature").toString()));
-                    coup.setId(Integer.valueOf(((JSONObject) jsonCoupons.get(i)).get("id").toString()));
+                    coup.setPermission(getInt(Boolean.valueOf(((JSONObject) jsonCoupons.get(i)).get("mature").toString())));
+                    //coup.setId(Integer.valueOf(((JSONObject) jsonCoupons.get(i)).get("id").toString()));
+                    coup.setId(i);
                     coup.setUsed(0);
                     coup.setTitle(((JSONObject) jsonCoupons.get(i)).get("name").toString());
-                    coup.setCompany(((JSONObject) jsonCoupons.get(i)).get("company").toString());
+                    //coup.setCompany(((JSONObject) jsonCoupons.get(i)).get("company").toString());
                     coup.setPrice(((JSONObject) jsonCoupons.get(i)).get("discount").toString());
                     getPicture(((JSONObject) jsonCoupons.get(i)).get("picture").toString(), coup, 1, runningActivity);
-                    getPicture(((JSONObject) jsonCoupons.get(i)).get("code").toString(), coup,2, runningActivity);
-
+                    getPicture(((JSONObject) jsonCoupons.get(i)).get("code").toString(), coup, 2, runningActivity);
+                    //coupList.add(coup);
+                    //db.addCoupon(coup);
                 }
 
                 coupons.setCoupons(coupList);
@@ -70,10 +78,14 @@ public class JSONparser {
             else coupons.setCoupons(db.getAllCoupons());
         }catch(Exception e){
             Log.d("parseError", e.toString());
+            Log.d("test","test");
         };
         return coupons;
     }
-
+    public int getInt(boolean bool){
+        if(bool == true) return 0;
+        else return 1;
+    }
     public void getPicture(final String link,final Coupon _coup,final int _type, final Index _runningActivity){
 
         AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
@@ -95,7 +107,7 @@ public class JSONparser {
 
                 try {
                     HttpClient httpClient = new DefaultHttpClient();
-                    HttpPost httpPost = new HttpPost(link);
+                    HttpGet httpPost = new HttpGet(link);
                     //httpPost.setEntity(new UrlEncodedFormEntity(param));
                     HttpResponse httpResponse = httpClient.execute(httpPost);
                     HttpEntity httpEntity = httpResponse.getEntity();

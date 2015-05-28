@@ -41,6 +41,7 @@ public class Fragment_coupons extends Fragment{
 		emptyView.setVisibility(View.GONE);
 		((ViewGroup)couponPage.getParent()).addView(emptyView);
 		couponPage.setEmptyView(emptyView);
+
 		return v;
     }
     public void setCouponList(int type)

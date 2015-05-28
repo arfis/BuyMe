@@ -2,9 +2,13 @@ package data;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.widget.ImageButton;
 
-public class Coupon {
+import java.io.Serializable;
+
+public class Coupon implements Serializable {
 	private int id;
 	private String title;
 	private int used;
@@ -100,4 +104,5 @@ public class Coupon {
 	public void setPermission(int permission) {
 		this.Permission = permission;
 	}
+
 }

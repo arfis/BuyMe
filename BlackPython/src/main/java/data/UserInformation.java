@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.facebook.widget.LoginButton;
+
+import manager.SharedPreferencesManager;
 import utils.HotCoupons;
 
 public class UserInformation {
@@ -14,12 +16,10 @@ public class UserInformation {
 	static Object email;
 	static String id;
 	static int used = 0;
-	static int usedCoupons;
 	static boolean loggedInFb;
 	static LoginButton loggingButton;
 	static MemoryStorage mMemoryStorage;
-	static SharedPreferences mSharedPreferences;
-	
+
 	public static String userIdKey;
 	public static String loginTokenKey;
 	public static String alreadyLoggedKey;
@@ -28,31 +28,6 @@ public class UserInformation {
 	public UserInformation()
 	{
 		this.context = HotCoupons.getInstance();
-	}
-	
-	public static void LoadShaderReferences()
-	{
-		SharedPreferences prefs = ((HotCoupons) context).getInstance().getSharedPreferences(
-			      PREFS_NAME, Context.MODE_PRIVATE);
-		//usedCoupons = prefs.getInt("usedCoupons");
-		
-	}
-	
-	@SuppressLint("NewApi") public static void setSharedPreferences()
-	{
-		SharedPreferences prefs = ((HotCoupons) context).getInstance().getSharedPreferences(
-			      PREFS_NAME, Context.MODE_PRIVATE);
-		prefs.edit()
-		.putBoolean("loggedIn", loggedInFb)
-		.putInt("usedCoupons", usedCoupons)
-		.commit();
-	}
-	public static SharedPreferences getLocal() {
-		return mSharedPreferences;
-	}
-
-	public static void setLocal(SharedPreferences local) {
-		mSharedPreferences = local;
 	}
 
 	public static MemoryStorage getMemory() {
@@ -63,10 +38,6 @@ public class UserInformation {
 		mMemoryStorage = memory;
 	}
 
-	public static void CouponIncrement()
-	{
-		used++;
-	}
 	
 	public static LoginButton getLoggingButton() {
 		return loggingButton;
@@ -91,6 +62,12 @@ public class UserInformation {
 	}
 	public static void setEmail(Object object) {
 		email = object;
+	}
+	public static void setEmai(String mail){
+		SharedPreferencesManager.setEmail(mail);
+	}
+	public static String getEmailString(){
+		return SharedPreferencesManager.getEmail();
 	}
 	public static String getId() {
 		return id;

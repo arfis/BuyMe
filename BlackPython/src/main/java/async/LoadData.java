@@ -20,12 +20,14 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Random;
 
 public class LoadData {
 
@@ -51,10 +53,13 @@ public class LoadData {
 			@Override
 			protected Void doInBackground(Void... contexts) {
 				InputStream inputStream = null;
+				Random rand = new Random();
+
+				int  n = rand.nextInt(10000) + 1;
 
 				try {
 					HttpClient httpClient = new DefaultHttpClient();
-					HttpPost httpPost = new HttpPost(Const.LINK);
+					HttpGet httpPost = new HttpGet(Const.LINK+Const.IMEI+ n+"/");
 					//httpPost.setEntity(new UrlEncodedFormEntity(param));
 					HttpResponse httpResponse = httpClient.execute(httpPost);
 					HttpEntity httpEntity = httpResponse.getEntity();
@@ -64,7 +69,7 @@ public class LoadData {
 				}
 				;
 
-				// Read content & Log
+				// precitanie inputStreamu z requestu
 				try {
 					BufferedReader bReader = new BufferedReader(new InputStreamReader(inputStream, "utf-8"), 8);
 					StringBuilder sBuilder = new StringBuilder();

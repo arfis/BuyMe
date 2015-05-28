@@ -77,7 +77,7 @@ public class CouponsListAdapter extends ArrayAdapter<Coupon>{
 	 
 	        Coupon actualCoupon = data.get(position);
 	        viewHolder.imageView.setTag(actualCoupon.getId());
-	        
+
 	        viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
 
 				@Override

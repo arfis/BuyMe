@@ -3,6 +3,7 @@ package activity;
 import java.util.ArrayList;
 
 import async.LoadData;
+import data.Const;
 import data.DrawerItem;
 import data.UserInformation;
 
@@ -32,6 +33,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -51,7 +53,6 @@ import service.LocationService;
 public class Index extends ActionBarActivity {
 
     private final static String TAG_FRAGMENT = "INDEX";
-    int unUsed;
     ArrayList<DrawerItem> data = new ArrayList();
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -81,6 +82,9 @@ public class Index extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.context = getApplicationContext();
+        TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+        Const.IMEI = telephonyManager.getDeviceId();
+
         setContentView(R.layout.activity_index);
 
         rw = (RippleView) findViewById(R.id.more);
@@ -117,6 +121,7 @@ public class Index extends ActionBarActivity {
 
         drawDrawer();
     }
+
 
     public void drawDrawer()
     {
@@ -190,7 +195,7 @@ public class Index extends ActionBarActivity {
     {
         super.onResume();
         updateCount();
-
+        loadDatabase();
     }
     public void showLayout(View view)
     {

@@ -41,27 +41,24 @@ import manager.SharedPreferencesManager;
 
 //aktivita pre zobrazovanie informacii o kuponov
 public class ActivityFullscreen extends Activity implements AnimationListener {
-	ImageView img,bt;
-	RatingBar rb;
+	ImageView img;
 	TextView tv,tv2;
-	Button but,button;
+	Button but;
 	MemoryStorage db;
+	Coupon coupon;
 	int value;
-	int index;
-	String instance;
 	Animation rotation,fadeIn;
-	boolean gold = false;
-	int FLAG_SET_USED = 0;
-	
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB) @SuppressWarnings("deprecation")
+
+
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle b = getIntent().getExtras();
 
         db = UserInformation.getMemory();
-        
+
         value = b.getInt("pressed_coupon");
+		coupon = getCoupon();
         //instance = b.getString("instance");
         
      	// load the animation
@@ -89,7 +86,7 @@ public class ActivityFullscreen extends Activity implements AnimationListener {
        but.setBackgroundDrawable(getResources().getDrawable(R.drawable.coupon_use));
        
        //nadstavenie informacii o kupone na screen
-       setCouponInformation(value);
+       setCouponInformation();
        
        but.setOnClickListener(new Button.OnClickListener(){
 
@@ -126,8 +123,7 @@ public class ActivityFullscreen extends Activity implements AnimationListener {
     	            		 img.setAnimation(rotation);
     	            		 tv.setVisibility(View.GONE);
     	            		 tv2.setVisibility(View.GONE);
-    	            		 Log.d("USED", "used index: " + value);
-							 removeCoupon(value);
+							 removeCoupon();
     	            	 }
     	             });
     	             
@@ -143,37 +139,37 @@ public class ActivityFullscreen extends Activity implements AnimationListener {
     	   }});
     }
 
-	private void removeCoupon(int value){
+	private Coupon getCoupon(){
+		for( Coupon c : CouponSet.getCoupons()){
+			if(c.getId() == value) {
+				return c;
+			}
+		}
+		return null;
+	}
 
-		SharedPreferencesManager.setUsedCoupon();
-		db.CouponUsed(value);
+	private void removeCoupon(){
+
+		SharedPreferencesManager.setUsedCoupon(coupon.getId());
+		db.CouponUsed(coupon.getId());
 
 		for(int i =0;i<CouponSet.getCoupons().size();i++) {
-			if(CouponSet.getCoupons().get(i).getId() == value) {
+			if(CouponSet.getCoupons().get(i).getId() == coupon.getId()) {
 				CouponSet.getCoupons().get(i).setUsed(1);
 			}
 		}
 	}
 
 	//nadstavenie informacii o kupone
-	private void setCouponInformation(int couponNumb)
+	private void setCouponInformation()
 	{
-		int i = 0;
-		Coupon c = null;
-		while(CouponSet.getCoupons().get(i)!=null) {
-			if(CouponSet.getCoupons().get(i).getId()==couponNumb) {
-				c = CouponSet.getCoupons().get(i);
-				break;
-			}
-			i++;
-		}
 
-		Log.d("USED COUPON","cislo used je: " + c.isUsed());
-		tv.setText(c.getTitle());
-        tv2.setText(c.getAbout());
-        img=(ImageButton)findViewById(R.id.picture);
-        img.setBackgroundResource(R.drawable.couponimg);
-        but.setText(c.getPrice());
+		Log.d("USED COUPON","cislo used je: " + coupon.isUsed());
+		tv.setText(coupon.getTitle());
+        tv2.setText(coupon.getAbout());
+        img=(ImageView)findViewById(R.id.picture);
+        img.setImageBitmap(coupon.getPicture());
+        but.setText(coupon.getPrice());
 	}
 	
 	@Override
@@ -184,7 +180,7 @@ public class ActivityFullscreen extends Activity implements AnimationListener {
 
 	@Override
 	public void onAnimationEnd(Animation animation) {
-		img.setBackgroundResource(R.drawable.barcode);
+		img.setImageBitmap(coupon.getCode());
 		img.setAnimation(fadeIn); 
 		
 	}
