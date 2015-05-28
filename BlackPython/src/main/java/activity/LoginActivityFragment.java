@@ -145,6 +145,7 @@ public class LoginActivityFragment extends Fragment implements
 			public void onClick(View v) {
 				SharedPreferencesManager.setLoggedMethod(LoggingTypes.FREE.getIntValue());
 				startFirstActivity();
+
 				//new LoadData(context).execute();
 			}
 		});
@@ -165,10 +166,17 @@ public class LoginActivityFragment extends Fragment implements
 
         Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
         String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
-        String name = currentPerson.getDisplayName();
-        Log.d("MY EMAIL: ",email);
-        Log.d("MY NAME: ",name);
 
+		//if it is a google+ account currentPerson returns a value, else it is null
+		if (currentPerson != null) {
+			String name = currentPerson.getDisplayName();
+			UserInformation.setName(name);
+			Log.d("MY NAME: ", name);
+		}
+
+        Log.d("MY EMAIL: ",email);
+		UserInformation.setEmail(email);
+		SharedPreferencesManager.setLoggedMethod(LoggingTypes.GMAIL.getIntValue());
         startFirstActivity();
         //Plus.PeopleApi.loadVisible(mGoogleApiClient, null)
         //       .setResultCallback(this);
@@ -230,11 +238,7 @@ public class LoginActivityFragment extends Fragment implements
 
     }
 
-	private void loginFacebook(){
-		Intent google = new Intent(context,GoogleLogin.class);
-		startActivity(google);
 
-	}
 	// zmena stavu prihlasenia
 	private void onSessionStateChange(Session session, SessionState state,
 			Exception exception) {
@@ -256,8 +260,7 @@ public class LoginActivityFragment extends Fragment implements
 								UserInformation.setLoggingButton(authButton);
 								UserInformation.setName(user.getName());
 								UserInformation.setId(user.getId());
-								UserInformation.setEmail(user.asMap().get(
-										"email"));
+								UserInformation.setEmail((String) user.getProperty("email"));
 
 								SharedPreferencesManager.setLoggedMethod(LoggingTypes.FACEBOOK.getIntValue());
 								startFirstActivity();
@@ -280,7 +283,7 @@ public class LoginActivityFragment extends Fragment implements
 		this.getActivity().finish();
 		this.getActivity().overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();

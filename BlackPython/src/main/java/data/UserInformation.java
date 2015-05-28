@@ -57,16 +57,11 @@ public class UserInformation {
 	public static void setName(String namee) {
 		name = namee;
 	}
-	public static Object getEmail() {
-		return email;
-	}
-	public static void setEmail(Object object) {
-		email = object;
-	}
-	public static void setEmai(String mail){
+
+	public static void setEmail(String mail){
 		SharedPreferencesManager.setEmail(mail);
 	}
-	public static String getEmailString(){
+	public static String getEmail(){
 		return SharedPreferencesManager.getEmail();
 	}
 	public static String getId() {

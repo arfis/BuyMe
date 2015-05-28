@@ -7,7 +7,10 @@ import data.UserInformation;
 
 import fakeData.FalseCoupons;
 import activity.Index;
+import manager.SharedPreferencesManager;
 import utils.JSONparser;
+import utils.JsonCreator;
+import utils.LoggingTypes;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -56,10 +59,17 @@ public class LoadData {
 				Random rand = new Random();
 
 				int  n = rand.nextInt(10000) + 1;
-
+				HttpClient httpClient = new DefaultHttpClient();
+				HttpGet httpPost;
+				httpPost = new HttpGet(Const.LINK + Const.IMEI + n + "/");
 				try {
-					HttpClient httpClient = new DefaultHttpClient();
-					HttpGet httpPost = new HttpGet(Const.LINK+Const.IMEI+ n+"/");
+
+					if(SharedPreferencesManager.getLoggedMethod() == LoggingTypes.GMAIL.getIntValue() ||
+							SharedPreferencesManager.getLoggedMethod() == LoggingTypes.FACEBOOK.getIntValue()) {
+						JsonCreator jcreat = new JsonCreator();
+						httpPost .setHeader("email", jcreat.createMail(SharedPreferencesManager.getEmail()).toString(2));
+					}
+
 					//httpPost.setEntity(new UrlEncodedFormEntity(param));
 					HttpResponse httpResponse = httpClient.execute(httpPost);
 					HttpEntity httpEntity = httpResponse.getEntity();

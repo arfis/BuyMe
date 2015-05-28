@@ -21,11 +21,12 @@ public class SharedPreferencesManager {
     }
     public static void setEmail(String Email){
         SharedPreferences.Editor edit = sharedPrefs.edit();
-        edit.putString(TAG_EMAIL,Email).commit();
+        edit.putString(TAG_EMAIL, Email).commit();
     }
 
     public static String getEmail(){
         return sharedPrefs.getString(TAG_EMAIL, "");
+
     }
 
     public static void setLocationSetting(boolean location){

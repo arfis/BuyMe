@@ -317,16 +317,6 @@ public class Index extends ActionBarActivity {
         new AsyncTask<Context, Void, Void>() {
             @Override
             protected Void doInBackground(Context... contexts) {
-                //TODO: vytvorenie connection na api pre ziskanie a taktiez ziskanie timestampu ktory sa
-                //MemoryStorage coup = new MemoryStorage(contexts[0]);
-                //Log.d("kurva","koniec prvej casti");
-                //UserInformation.setMemory(coup);
-                //Log.d("kurva", "koniec druhej casti");
-                //FalseCoupons.setDatabase(contexts[0]);
-                //Log.d("kurva", "koniec tretej casti");
-                //CouponSet.setCoupons(coup.getAllCoupons());
-                //Log.d("kurva", "koniec stvrtej casti");
-                //FalseCoupons.setGolden(getApplicationContext());
                 LoadData ld = new LoadData(context);
                 ld.getData(context, Index.this);
 
