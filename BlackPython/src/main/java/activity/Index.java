@@ -4,26 +4,20 @@ import java.util.ArrayList;
 
 import async.LoadData;
 import data.Const;
+import data.CouponSet;
 import data.DrawerItem;
 import data.UserInformation;
 
 import com.andexert.library.RippleView;
 import com.facebook.widget.ProfilePictureView;
-import com.fragments.Fragment_about;
 import com.fragments.Fragment_coupons;
 import com.fragments.Fragment_info;
-import com.fragments.Fragment_profil;
 import com.fragments.Fragment_rulez;
 import com.blackpython.R;
 import utils.LoggingTypes;
 
-import adapter.DrawerListAdapter;
-
-import android.app.LauncherActivity;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -40,9 +34,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,6 +48,7 @@ public class Index extends ActionBarActivity {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private TableRow coupon, info, about, map, rules;
+    private TextView tcoupon,tinfo,tabout,tmap,trules;
     RippleView rw,rw2,rw3,rw4,rw5;
     Context context;
 
@@ -82,7 +74,8 @@ public class Index extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.context = getApplicationContext();
-        TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+
+        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         Const.IMEI = telephonyManager.getDeviceId();
 
         setContentView(R.layout.activity_index);
@@ -98,6 +91,12 @@ public class Index extends ActionBarActivity {
         info = (TableRow) findViewById(R.id.info);
         rules = (TableRow) findViewById(R.id.rulez);
         map = (TableRow) findViewById(R.id.map);
+
+        tcoupon = (TextView) findViewById(R.id.txtCoupon);
+        tabout = (TextView) findViewById(R.id.txtAbout);
+        tinfo = (TextView) findViewById(R.id.txtInfo);
+        trules = (TextView) findViewById(R.id.txtRules);
+        tmap = (TextView) findViewById(R.id.txtMap);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -141,7 +140,14 @@ public class Index extends ActionBarActivity {
     }
     public void updateCount(){
         TextView couponsCount = (TextView) findViewById(R.id.usedCoupons);
+        TextView newCoupons = (TextView) findViewById(R.id.counter);
         couponsCount.setText("Pocet pouzitych kuponov je: " + SharedPreferencesManager.getUsedCoupons());
+        if(SharedPreferencesManager.getNew()>0) {
+            newCoupons.setText(SharedPreferencesManager.getNew());
+        }
+        //TODO: vymazat tieto dva riadky
+        else
+        newCoupons.setText("5");
     }
 
     @Override
@@ -153,7 +159,7 @@ public class Index extends ActionBarActivity {
 
         switch (item.getItemId()) {
 
-            case R.id.action_cart:
+            case R.id.golden:
                 showGolden();
                 break;
             case R.id.settings:
@@ -196,15 +202,28 @@ public class Index extends ActionBarActivity {
         super.onResume();
         updateCount();
         loadDatabase();
+        resetDrawerColors();
+        coupon.setBackgroundResource(R.color.greyLight);
+        tcoupon.setTextColor(getResources().getColor(R.color.greyDark));
     }
-    public void showLayout(View view)
-    {
-        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+    public void resetDrawerColors(){
         coupon.setBackgroundResource(R.color.greyDark);
         rules.setBackgroundResource(R.color.greyDark);
         about.setBackgroundResource(R.color.greyDark);
         info.setBackgroundResource(R.color.greyDark);
         map.setBackgroundResource(R.color.greyDark);
+        tcoupon.setTextColor(getResources().getColor(R.color.greyLight));
+        trules.setTextColor(getResources().getColor(R.color.greyLight));
+        tabout.setTextColor(getResources().getColor(R.color.greyLight));
+        tinfo.setTextColor(getResources().getColor(R.color.greyLight));
+        tmap.setTextColor(getResources().getColor(R.color.greyLight));
+    }
+
+    public void showLayout(View view)
+    {
+        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        resetDrawerColors();
 
         rw.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
 
@@ -220,6 +239,7 @@ public class Index extends ActionBarActivity {
                 ft.addToBackStack(null);
                 ft.commit();
                 coupon.setBackgroundResource(R.color.greyLight);
+                tcoupon.setTextColor(getResources().getColor(R.color.greyDark));
             }
 
             });
@@ -230,11 +250,11 @@ public class Index extends ActionBarActivity {
             public void onComplete(RippleView rippleView) {
                 Log.d("Sample", "Ripple completed");
                 drawerLayout.closeDrawers();
-                Fragment_rulez frules = new Fragment_rulez();
-                ft.replace(R.id.frame_container, frules);
-                ft.addToBackStack(null);
-                ft.commit();
+                Intent intent = new Intent(Index.this, About_activity.class);
+                intent.putExtra("Mode", "RULES");
+                startActivity(intent);
                 rules.setBackgroundResource(R.color.greyLight);
+                trules.setTextColor(getResources().getColor(R.color.greyDark));
             }
 
         });
@@ -244,11 +264,11 @@ public class Index extends ActionBarActivity {
             public void onComplete(RippleView rippleView) {
                 Log.d("Sample", "Ripple completed");
                 drawerLayout.closeDrawers();
-                Fragment_about fabout = new Fragment_about();
-                ft.replace(R.id.frame_container, fabout);
-                ft.addToBackStack(null);
-                ft.commit();
+                Intent intent = new Intent(Index.this, About_activity.class);
+                intent.putExtra("Mode","ABOUT");
+                startActivity(intent);
                 about.setBackgroundResource(R.color.greyLight);
+                tabout.setTextColor(getResources().getColor(R.color.greyDark));
             }
 
         });
@@ -258,11 +278,11 @@ public class Index extends ActionBarActivity {
             public void onComplete(RippleView rippleView) {
                 Log.d("Sample", "Ripple completed");
                 drawerLayout.closeDrawers();
-                Fragment_info finfo = new Fragment_info();
-                ft.replace(R.id.frame_container, finfo);
-                ft.addToBackStack(null);
-                ft.commit();
+                Intent intent = new Intent(Index.this, About_activity.class);
+                intent.putExtra("Mode","INFO");
+                startActivity(intent);
                 info.setBackgroundResource(R.color.greyLight);
+                tinfo.setTextColor(getResources().getColor(R.color.greyDark));
             }
 
         });
@@ -275,6 +295,7 @@ public class Index extends ActionBarActivity {
                 Intent intent = new Intent(Index.this, Map.class);
                 startActivity(intent);
                 map.setBackgroundResource(R.color.greyLight);
+                tmap.setTextColor(getResources().getColor(R.color.greyDark));
             }
 
         });
@@ -300,7 +321,21 @@ public class Index extends ActionBarActivity {
     }
     //adding listeners to the coupons - every image button has got a unique listener
 
-    //If there is an icon
+
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        MenuItem golden_icon = menu.findItem(R.id.golden);
+        if(CouponSet.getGolden() == null || CouponSet.getGolden().size() == 0)
+        {
+            golden_icon.setVisible(false);
+        }
+        else
+        {
+            golden_icon.setVisible(true);
+        }
+        return true;
+    }
+
     @Override
     public void onBackPressed() {
         if(drawerLayout.isDrawerOpen(Gravity.START| Gravity.LEFT)){
@@ -342,7 +377,7 @@ public class Index extends ActionBarActivity {
                 coup.setArguments(bundle);
                 ft.replace(R.id.frame_container, coup);
                 ft.commit();
-
+                coupon.setBackgroundResource(R.color.greyLight);
                 dialog.dismiss();
 
             }

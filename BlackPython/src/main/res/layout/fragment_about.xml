@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:text="Large Text"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_below="@+id/include"
+        android:layout_below="@+id/toolbar"
         android:layout_centerHorizontal="true" />
 
     <TextView
@@ -31,6 +31,6 @@
         layout="@layout/component_toolbar"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:id="@+id/include" />
+        android:id="@+id/toolbar" />
 
 </RelativeLayout>

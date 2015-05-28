@@ -17,4 +17,10 @@ public class CouponSet {
 		coupons = couponss;
 	}
 	public static ArrayList<Coupon> getGolden(){ return golden;}
+	public static void addGolden(Coupon coupon){
+		golden.add(coupon);
+	}
+	public static void removeGolden(){
+		golden.clear();
+	}
 }

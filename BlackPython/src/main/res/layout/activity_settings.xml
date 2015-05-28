@@ -30,6 +30,16 @@
         android:id="@+id/switch_location"
         android:checked="false"
         android:layout_alignTop="@+id/scrollView"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp" />
 
-    </RelativeLayout>
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/notification"
+        android:id="@+id/switch1"
+        android:layout_below="@+id/switch_location"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp" />
+
+</RelativeLayout>

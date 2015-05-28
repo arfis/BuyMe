@@ -21,6 +21,7 @@ public class Coupon implements Serializable {
 	private String company;
 	private byte[] picturebyte;
 	private byte[] codebyte;
+	private int opened;
 
 	public Coupon(String title,String about, int used, int Permission,String price,byte[] picture)
 	{
@@ -31,6 +32,7 @@ public class Coupon implements Serializable {
 		this.price = price;
 		this.picturebyte = picture;
 		this.picture = setBitmap(picture);
+		this.opened = 0;
 	}
 	
 	public Coupon()
@@ -103,6 +105,12 @@ public class Coupon implements Serializable {
 	}
 	public void setPermission(int permission) {
 		this.Permission = permission;
+	}
+	public void setOpened(int open){
+		opened = open;
+	}
+	public int getOpened(){
+		return opened;
 	}
 
 }

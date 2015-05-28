@@ -25,8 +25,11 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -54,7 +57,7 @@ import service.LocationService;
 import static android.widget.Toast.makeText;
 
 
-public class Map extends Activity {
+public class Map extends ActionBarActivity {
 
 	private static final long MIN_TIME_BW_UPDATES = 0;
 
@@ -65,7 +68,6 @@ public class Map extends Activity {
 	   	private MapView  mMapView;
 	    static private MapController   mMapController;
 	    private LayoutInflater 	inflater;
-	    private TextView 		tMap;
 	    private ItemizedOverlay<OverlayItem> mMyLocationOverlay;
 	    private ResourceProxy 	mResourceProxy;
 	    static GeoPoint 				myLocation;
@@ -80,6 +82,10 @@ public class Map extends Activity {
 			inflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
 	        v = inflater.inflate(R.layout.fragment_freemap, null);
 
+			Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+			setSupportActionBar(toolbar);
+
+			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 	        mResourceProxy = new ResourceProxyImpl(getApplicationContext());
 
 	        mMapView = (MapView) findViewById(R.id.mapview);
@@ -89,15 +95,14 @@ public class Map extends Activity {
 	        mMapController = (MapController) mMapView.getController();
 	        mMapController.setZoom(20);
 	        
-	        tMap = (TextView) findViewById(R.id.mapTextView);
+	        //tMap = (TextView) findViewById(R.id.mapTextView);
 
 			if(myLocation == null) {
 
-				makeText(getApplicationContext(),"nebola najdena pozicia", Toast.LENGTH_SHORT).show();
+				makeText(getApplicationContext(), getResources().getString(R.string.error_map), Toast.LENGTH_SHORT).show();
 				finish();
 			}
 			else {
-				tMap.setText(myLocation.getLatitude() + " " + myLocation.getLongitude());
 				mMapController.setCenter(myLocation);
 
 				items = new ArrayList<OverlayItem>();
@@ -185,7 +190,17 @@ public class Map extends Activity {
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-		overridePendingTransition(R.anim.abc_slide_in_top,R.anim.abc_slide_out_bottom);
+		overridePendingTransition(R.anim.abc_slide_in_top, R.anim.abc_slide_out_bottom);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case android.R.id.home:
+				this.finish();
+				return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	private void fillMapData()

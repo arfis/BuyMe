@@ -64,12 +64,14 @@ public class Fragment_coupons extends Fragment{
 		}
 		else {
 			this.getActivity().setTitle("Golden Coupon");
-			for (Coupon coupon : FalseCoupons.getGolden()) {
+			for (Coupon coupon : CouponSet.getGolden()) {
 				if (coupon.isUsed() == 0) {
 					Activity activity = getActivity();
 					dataCoupons.add(coupon);
 					CouponsListAdapter couponsList = new CouponsListAdapter(activity, dataCoupons,getActivity());
 					couponPage.setAdapter(couponsList);
+					//ak sa vyskytol zlaty kupon tak zobraz zlatu tehlicku
+					getActivity().invalidateOptionsMenu();
 				}
 			}
 		}

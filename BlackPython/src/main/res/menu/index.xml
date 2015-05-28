@@ -4,15 +4,15 @@
     tools:context="com.example.blackpython.Index" >
     <item
         android:title="golden"
-        android:id="@+id/action_cart"
-        android:icon="@drawable/about"
-        android:orderInCategory="100"
+        android:id="@+id/golden"
+        android:icon="@drawable/index"
+        android:orderInCategory="99"
         app:showAsAction="always"/>
     <item
         android:title="settings"
         android:id="@+id/settings"
         android:icon="@drawable/geo"
-        android:orderInCategory="99"
+        android:orderInCategory="100"
         app:showAsAction="always"/>
 </menu>
 

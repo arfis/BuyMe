@@ -23,7 +23,7 @@
             android:id="@+id/profilePictureView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textView5"
+            android:layout_below="@+id/txtInfo"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="60dp" >
         </com.facebook.widget.ProfilePictureView>
@@ -38,7 +38,7 @@
             android:text="LoginButton" />
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/txtAbout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/textView1"
@@ -48,11 +48,11 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/txtInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/textView4"
-            android:layout_below="@+id/textView4"
+            android:layout_alignLeft="@+id/txtAbout"
+            android:layout_below="@+id/txtAbout"
             android:layout_marginTop="18dp"
             android:text="Medium Text"
             android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -61,8 +61,8 @@
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/textView5"
-            android:layout_below="@+id/textView5"
+            android:layout_alignLeft="@+id/txtInfo"
+            android:layout_below="@+id/txtInfo"
             android:layout_marginTop="23dp"
             android:text="Medium Text"
             android:textAppearance="?android:attr/textAppearanceMedium" />

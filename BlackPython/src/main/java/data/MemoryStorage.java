@@ -88,12 +88,13 @@ public class MemoryStorage extends SQLiteOpenHelper{
     private static final String KEY_PICTURE = "picture";
     private static final String KEY_COMPANY = "company";
     private static final String KEY_CODE = "code";
+    private static final String KEY_OPENED = "opened";
 
     private static final String KEY_LAT = "latitude";
     private static final String KEY_LONG = "longitude";
     //private static final String KEY_ImageButton = "imageButton";
     
-    private static final String[] COLUMNS_COUPONS = {KEY_ID,KEY_TITLE,KEY_PERMISSION,KEY_PRICE,KEY_ABOUT,KEY_USED,KEY_PICTURE,KEY_COMPANY,KEY_CODE};
+    private static final String[] COLUMNS_COUPONS = {KEY_ID,KEY_TITLE,KEY_PERMISSION,KEY_PRICE,KEY_ABOUT,KEY_USED,KEY_PICTURE,KEY_COMPANY,KEY_CODE,KEY_OPENED};
     private static final String[] COLUMNS_POINTS = {KEY_ID,KEY_ABOUT,KEY_LAT,KEY_LONG};
 
     public void addPoint(Places place){
@@ -125,6 +126,7 @@ public class MemoryStorage extends SQLiteOpenHelper{
         values.put(KEY_PICTURE, coupon.getPictureByte());
         values.put(KEY_COMPANY, coupon.getCompany());
         values.put(KEY_CODE, coupon.getCodeByte());
+        values.put(KEY_OPENED,coupon.getOpened());
         // 3. insert
         db.insert(TABLE_COUPONS, // table
                 null, //nullColumnHack
@@ -194,7 +196,7 @@ public class MemoryStorage extends SQLiteOpenHelper{
         coupon.setPicture(cursor.getBlob(6));
         coupon.setCompany(cursor.getString(7));
         coupon.setCode(cursor.getBlob(8));
-
+        coupon.setOpened(Integer.parseInt(cursor.getString(9)));
         Log.d("getCoupon("+id+")", coupon.toString());
  
         // 5. return book
@@ -228,6 +230,7 @@ public class MemoryStorage extends SQLiteOpenHelper{
                 coupon.setPicture(cursor.getBlob(6));
                 coupon.setCompany(cursor.getString(7));
                 coupon.setCode(cursor.getBlob(8));
+                coupon.setOpened(Integer.parseInt(cursor.getString(9)));
                 // Add a coupon
                 coupons.add(coupon);
             } while (cursor.moveToNext());
@@ -269,6 +272,34 @@ public class MemoryStorage extends SQLiteOpenHelper{
  
     }
 
+    public int couponOpened(int coupon) {
+
+        // 1. get reference to writable DB
+        if(!db.isOpen())
+            db = this.getWritableDatabase();
+
+        // 2. create ContentValues to add key "column"/value
+        ContentValues values = new ContentValues();
+        values.put("opened", "1"); // get title
+
+        // 3. updating row
+        int index = db.update(TABLE_COUPONS, //table
+                values, // column/value
+                KEY_ID+" = "+ coupon , // selections
+                null); //selection args
+
+        // 4. close
+        db.close();
+
+        List<Coupon> c = getAllCoupons();
+        for(int i = 0;i<c.size();i++)
+        {
+            Log.d("DB vypis","Used: " + Integer.toString(c.get(i).isUsed()));
+            Log.d("DB vypis","ID: " + Integer.toString(c.get(i).getId()));
+        }
+        return index;
+
+    }
     // Deleting a single coupon
     public void deleteCoupon(Coupon coupon) {
  

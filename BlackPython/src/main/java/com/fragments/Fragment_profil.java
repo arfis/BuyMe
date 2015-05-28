@@ -1,22 +1,16 @@
 package com.fragments;
 
 import com.blackpython.R;
-import com.blackpython.R.id;
-import com.blackpython.R.layout;
+
 import data.UserInformation;
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.Session;
-import com.facebook.SessionState;
+
 import com.facebook.UiLifecycleHelper;
-import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 import com.facebook.widget.ProfilePictureView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,8 +29,8 @@ public class Fragment_profil extends Fragment{
 		View v;
 		// Inflate the layout for this fragment
 		v = inflater.inflate(R.layout.fragment_user, container, false);
-		tv = (TextView) v.findViewById(R.id.textView4);
-		tv2 = (TextView) v.findViewById(R.id.textView5);
+		tv = (TextView) v.findViewById(R.id.txtAbout);
+		tv2 = (TextView) v.findViewById(R.id.txtInfo);
 		tv3 = (TextView) v.findViewById(R.id.textView2);
 		pf = (ProfilePictureView)v.findViewById(R.id.profilePictureView1);
 		lb = (LoginButton) v.findViewById(R.id.loginButton1);

@@ -31,7 +31,7 @@
             android:layout_width="fill_parent"
             android:layout_height="50dp"
             android:id="@+id/coupon"
-            android:background="@color/greyLight"
+            android:background="@color/greyDark"
             android:padding="5dp"
             android:clickable="true"
             android:onClick="showLayout">
@@ -48,10 +48,24 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/drawer1"
-                android:id="@+id/textView"
+                android:id="@+id/txtCoupon"
                 android:layout_gravity="center"
                 android:paddingLeft="15dp"
-                android:gravity="left|center_horizontal" />
+                android:gravity="left|center_horizontal"
+                android:textColor="@color/greyLight" />
+            <TextView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:text="5"
+                android:textColor="#FFF"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:background="@drawable/badge_circle"
+                android:id="@+id/counter"
+                android:layout_marginLeft="5dp"
+                android:textAlignment="center"
+                android:layout_gravity="center"
+                android:gravity="center" />
         </TableRow>
 
         </com.andexert.library.RippleView>
@@ -82,10 +96,11 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/drawer2"
-                android:id="@+id/textView3"
+                android:id="@+id/txtRules"
                 android:layout_gravity="center"
                 android:paddingLeft="15dp"
-                android:gravity="left|center_horizontal" />
+                android:gravity="left|center_horizontal"
+                android:textColor="@color/greyLight" />
         </TableRow>
 
         </com.andexert.library.RippleView>
@@ -100,7 +115,7 @@
             android:layout_width="fill_parent"
             android:layout_height="50dp"
             android:id="@+id/about"
-            android:background="@color/greyLight"
+            android:background="@color/greyDark"
             android:padding="5dp"
             android:clickable="true"
             android:onClick="showLayout">
@@ -117,10 +132,11 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/drawer3"
-                android:id="@+id/textView4"
+                android:id="@+id/txtAbout"
                 android:layout_gravity="center"
                 android:paddingLeft="15dp"
-                android:gravity="left|center_horizontal" />
+                android:gravity="left|center_horizontal"
+                android:textColor="@color/greyLight" />
         </TableRow>
 
         </com.andexert.library.RippleView>
@@ -152,10 +168,11 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/drawer4"
-                android:id="@+id/textView5"
+                android:id="@+id/txtInfo"
                 android:layout_gravity="center"
                 android:paddingLeft="15dp"
-                android:gravity="left|center_horizontal" />
+                android:gravity="left|center_horizontal"
+                android:textColor="@color/greyLight" />
         </TableRow>
 
         </com.andexert.library.RippleView>
@@ -171,7 +188,7 @@
             android:layout_width="fill_parent"
             android:layout_height="50dp"
             android:id="@+id/map"
-            android:background="@color/greyLight"
+            android:background="@color/greyDark"
             android:padding="5dp"
             android:clickable="true"
             android:onClick="showLayout">
@@ -188,10 +205,11 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/drawer5"
-                android:id="@+id/textView6"
+                android:id="@+id/txtMap"
                 android:layout_gravity="center"
                 android:paddingLeft="15dp"
-                android:gravity="left|center_horizontal" />
+                android:gravity="left|center_horizontal"
+                android:textColor="@color/greyLight" />
 
         </TableRow>
         </com.andexert.library.RippleView>

@@ -25,6 +25,7 @@ import data.Coupon;
 import data.CouponSet;
 import data.DrawerItem;
 import data.UserInformation;
+import manager.SharedPreferencesManager;
 
 public class CouponsListAdapter extends ArrayAdapter<Coupon>{
 
@@ -88,6 +89,13 @@ public class CouponsListAdapter extends ArrayAdapter<Coupon>{
 	                Log.i("Coupon","Selected coupon is: " + v.getTag());
 					b.putInt("pressed_coupon", (Integer) v.getTag());
 					Log.i("clicked", v.getTag().toString());
+					//po kliknuti na kupon sa znizi pocet kuponov a v databaze sa upravi tento pocet tak isto
+					if(CouponSet.getCoupons().get((Integer)v.getTag()).getOpened() == 0){
+						UserInformation.getMemory().couponOpened((Integer)v.getTag());
+						SharedPreferencesManager.decreaseNew();
+						//mozno nejaky listener na znizenie poctu
+					}
+
 	        		intent.putExtras(b); //Put your id to your next Intent
 	        		mContext.startActivity(intent);
 					activity.overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);

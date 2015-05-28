@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="error_map">Aplikácia nemohla najst pozíciu, prosim ujistite sa že v nastaveniach je zapnutá kontrola pozície</string>
     <string name="app_name">Hot Coupons</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -34,5 +35,6 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="location">Zapnutie kontroly lokácie</string>
+    <string name="notification">Zapnutie notifikácií</string>
 
 </resources>

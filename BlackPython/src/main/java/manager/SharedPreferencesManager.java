@@ -10,6 +10,7 @@ public class SharedPreferencesManager {
     static String TAG_COUPONS_USED_ID = "UsedCouponsString";
     static String TAG_LOCATION = "location";
     static String TAG_EMAIL = "email";
+    static String TAG_NEW = "new";
 
     static SharedPreferences sharedPrefs;
     static Context context;
@@ -19,6 +20,22 @@ public class SharedPreferencesManager {
         if(sharedPrefs == null)
             sharedPrefs = context.getSharedPreferences("wifi", context.MODE_PRIVATE);
     }
+    public static void setNew(int newCoup){
+        SharedPreferences.Editor edit = sharedPrefs.edit();
+        edit.putInt(TAG_NEW, newCoup).commit();
+    }
+
+    public static int getNew(){
+        return sharedPrefs.getInt(TAG_NEW, 0);
+
+    }
+
+    public static void decreaseNew(){
+        int count = sharedPrefs.getInt(TAG_NEW, 0);
+        SharedPreferences.Editor edit = sharedPrefs.edit();
+        edit.putInt(TAG_NEW, count--).commit();
+    }
+
     public static void setEmail(String Email){
         SharedPreferences.Editor edit = sharedPrefs.edit();
         edit.putString(TAG_EMAIL, Email).commit();

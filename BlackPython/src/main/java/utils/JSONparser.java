@@ -25,6 +25,7 @@ import data.Coupon;
 import data.CouponSet;
 import data.MemoryStorage;
 import data.UserInformation;
+import manager.SharedPreferencesManager;
 
 public class JSONparser {
     CouponSet coupons;
@@ -37,24 +38,14 @@ public class JSONparser {
         UserInformation.setMemory(db);
 
         try {
-            //JSONObject mainObject = new JSONObject(results);
 
-            //int objectSize = mainObject.length();
-
-
-            //JSONObject info = mainObject.getJSONObject("information");
-
-            //String activated = info.get("activated").toString();
-            //String city = info.get("city").toString();
-
-            //JSONArray jsonCoupons = mainObject.getJSONArray("coupons");
-            //JSONObject serviceObject = mainObject.getJSONObject("services");
-            //int numberCoupons = jsonCoupons.length();
             JSONArray jsonCoupons = new JSONArray(results);
             if(jsonCoupons.length() > 0) {
                if(!db.isDatabaseEmpty() ) {
                    db.deleteAllCoupons();
                }
+                //nadstavenie poctu novych kuponov
+                SharedPreferencesManager.setNew(jsonCoupons.length());
 
                 for (int i = 0; i < jsonCoupons.length(); i++) {
                     Coupon coup = new Coupon();
@@ -74,11 +65,12 @@ public class JSONparser {
 
                 coupons.setCoupons(coupList);
             }
-
-            else coupons.setCoupons(db.getAllCoupons());
+            //ak nie su kupony stiahnute - ziadne nove - tak sa nacitaju kupony z databazy
+            else{
+                coupons.setCoupons(db.getAllCoupons());
+            }
         }catch(Exception e){
             Log.d("parseError", e.toString());
-            Log.d("test","test");
         };
         return coupons;
     }
