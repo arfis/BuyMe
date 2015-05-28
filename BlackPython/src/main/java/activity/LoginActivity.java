@@ -6,7 +6,9 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -23,23 +25,27 @@ import com.google.android.gms.plus.Plus;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class LoginActivity extends FragmentActivity implements
-		GoogleApiClient.ConnectionCallbacks,
-		GoogleApiClient.OnConnectionFailedListener{
+public class LoginActivity extends FragmentActivity
+{
 	LoginActivityFragment loginf;
-	private GoogleApiClient mGoogleApiClient;
+
+    protected void onActivityResult(int requestCode, int resultCode,Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentById(android.R.id.content);
+        if (fragment != null)
+        {
+            ((LoginActivityFragment)fragment).onActivityResult(requestCode, resultCode,data);
+        }
+    }
 
 	private static final String TAG = "MainFragment";
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 
-		mGoogleApiClient = new GoogleApiClient.Builder(this)
-				.addConnectionCallbacks(this)
-				.addOnConnectionFailedListener(this)
-				.addApi(Plus.API)
-				.addScope(new Scope("profile"))
-				.build();
 		// Add code to print out the key hash
 		try {
 			PackageInfo info = getPackageManager().getPackageInfo(
@@ -71,21 +77,5 @@ public class LoginActivity extends FragmentActivity implements
 	        loginf = (LoginActivityFragment) getSupportFragmentManager()
 	        .findFragmentById(android.R.id.content);
 	    }
-	}
-
-
-	@Override
-	public void onConnected(Bundle bundle) {
-
-	}
-
-	@Override
-	public void onConnectionSuspended(int i) {
-
-	}
-
-	@Override
-	public void onConnectionFailed(ConnectionResult connectionResult) {
-
 	}
 }
