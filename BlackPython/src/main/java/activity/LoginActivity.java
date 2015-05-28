@@ -2,6 +2,7 @@ package activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -17,6 +18,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.blackpython.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
@@ -24,6 +26,10 @@ import com.google.android.gms.plus.Plus;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import data.UserInformation;
+import manager.SharedPreferencesManager;
+import utils.LoggingTypes;
 
 public class LoginActivity extends FragmentActivity
 {
@@ -67,12 +73,34 @@ public class LoginActivity extends FragmentActivity
 	    //getActionBar().hide();
 	    if (savedInstanceState == null) {
 	        // Add the fragment on initial activity setup
-	        loginf = new LoginActivityFragment();
-	        getSupportFragmentManager()
-	        .beginTransaction()
-	        .add(android.R.id.content, loginf)
-	        .commit();
-	    } else {
+            UserInformation.init(this);
+            int loggedMethod = UserInformation.getLoggedMethod();
+
+            if (loggedMethod == LoggingTypes.GMAIL.getIntValue())
+            {
+                Intent intent = new Intent(this,GoogleLogin.class);
+                startActivity(intent);
+                this.overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
+                this.finish();
+            }
+            else if (loggedMethod == LoggingTypes.FACEBOOK.getIntValue())
+            {
+                 Intent intent = new Intent(this,Index.class);
+                 startActivity(intent);
+                 this.overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
+                 this.finish();
+            }
+            else
+            {
+                loginf = new LoginActivityFragment();
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .add(android.R.id.content, loginf)
+                        .commit();
+            }
+	    }
+        else
+        {
 	        // Or set the fragment from restored state info
 	        loginf = (LoginActivityFragment) getSupportFragmentManager()
 	        .findFragmentById(android.R.id.content);

@@ -1,5 +1,7 @@
 package activity;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 
 import async.LoadData;
@@ -8,18 +10,23 @@ import data.DrawerItem;
 import data.UserInformation;
 
 import com.andexert.library.RippleView;
+import com.facebook.Session;
 import com.facebook.widget.ProfilePictureView;
 import com.fragments.Fragment_about;
 import com.fragments.Fragment_coupons;
 import com.fragments.Fragment_info;
-import com.fragments.Fragment_profil;
 import com.fragments.Fragment_rulez;
 import com.blackpython.R;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.plus.Plus;
+
 import utils.LoggingTypes;
 
 import adapter.DrawerListAdapter;
 
 import android.app.LauncherActivity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -42,6 +49,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -58,7 +66,11 @@ public class Index extends ActionBarActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private TableRow coupon, info, about, map, rules;
     RippleView rw,rw2,rw3,rw4,rw5;
+    Button logOut;
     Context context;
+
+    ImageView googlePicture;
+    ProfilePictureView facebookPicture;
 
 
     @Override
@@ -77,6 +89,32 @@ public class Index extends ActionBarActivity {
         coup.setArguments(bundle);
         ft.replace(R.id.frame_container, coup);
         ft.commit();
+    }
+
+    private void goToLoginScreen()
+    {
+        Intent intent = new Intent(this,LoginActivity.class);
+        startActivity(intent);
+        this.finish();
+        this.overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
+    }
+
+    public static void callFacebookLogout(Context context) {
+        Session session = Session.getActiveSession();
+        if (session != null) {
+
+            if (!session.isClosed()) {
+                session.closeAndClearTokenInformation();
+                //clear your preferences if saved
+            }
+        } else {
+
+            session = new Session(context);
+            Session.setActiveSession(session);
+
+            session.closeAndClearTokenInformation();
+            //clear your preferences if saved
+        }
     }
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,10 +137,33 @@ public class Index extends ActionBarActivity {
         rules = (TableRow) findViewById(R.id.rulez);
         map = (TableRow) findViewById(R.id.map);
 
+        logOut = (Button) findViewById(R.id.logOutButton);
+        logOut.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                int loggedMethod = UserInformation.getLoggedMethod();
+
+                if (loggedMethod == LoggingTypes.GMAIL.getIntValue())
+                {
+                    GoogleApiClient mGoogleApiClient = UserInformation.getGoogleApiClient();
+                    Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
+                    mGoogleApiClient.disconnect();
+                }
+                else if (loggedMethod == LoggingTypes.FACEBOOK.getIntValue())
+                {
+                    callFacebookLogout(context);
+                }
+
+                UserInformation.clearUserData();
+                goToLoginScreen();
+            }
+        });
+
+        loadData();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        loadDatabase();
         SharedPreferencesManager.init(getApplicationContext());
 
         new FalsePoints();
@@ -119,26 +180,74 @@ public class Index extends ActionBarActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         mDrawerToggle.syncState();
 
-        drawDrawer();
+
     }
 
-
-    public void drawDrawer()
+    public void loadGoogleImage()
     {
+        new AsyncTask<String, Void, Bitmap>() {
 
-        ProfilePictureView pf = (ProfilePictureView) findViewById(R.id.profilePictureView1);
+            @Override
+            protected Bitmap doInBackground(String... params) {
 
-        if(SharedPreferencesManager.getLoggedMethod() == LoggingTypes.FREE.getIntValue()) {
-            pf.setVisibility(View.GONE);
+                try {
+                    URL url = new URL(params[0]);
+                    InputStream in = url.openStream();
+                    return BitmapFactory.decodeStream(in);
+                } catch (Exception e) {
+
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Bitmap bitmap) {
+                try
+                {
+                    googlePicture.setImageBitmap(bitmap);
+                    loadDatabase();
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
+        }.execute(UserInformation.getGoogleUserImage());
+
+    }
+
+    public void loadData()
+    {
+        googlePicture = (ImageView) findViewById(R.id.userPicture);
+        facebookPicture = (ProfilePictureView) findViewById(R.id.profilePictureView1);
+        int loggedMethod = UserInformation.getLoggedMethod();
+
+        if (loggedMethod == LoggingTypes.GMAIL.getIntValue())
+        {
+            googlePicture.setVisibility(View.VISIBLE);
+            facebookPicture.setVisibility(View.GONE);
+            loadGoogleImage();
+        }
+        else if (loggedMethod == LoggingTypes.FACEBOOK.getIntValue())
+        {
+            googlePicture.setVisibility(View.GONE);
+            facebookPicture.setVisibility(View.VISIBLE);
+            facebookPicture.setProfileId(UserInformation.getFacebookID());
+            loadDatabase();
         }
         else
-            pf.setProfileId(UserInformation.getId());
+        {
+            googlePicture.setVisibility(View.GONE);
+            facebookPicture.setVisibility(View.VISIBLE);
+            loadDatabase();
+        }
 
         TextView couponsCount = (TextView) findViewById(R.id.usedCoupons);
         couponsCount.setText("Pocet pouzitych kuponov je: " + SharedPreferencesManager.getUsedCoupons());
         TextView dName = (TextView) findViewById(R.id.drawerName);
         dName.setText(UserInformation.getName());
     }
+
     public void updateCount(){
         TextView couponsCount = (TextView) findViewById(R.id.usedCoupons);
         couponsCount.setText("Pocet pouzitych kuponov je: " + SharedPreferencesManager.getUsedCoupons());

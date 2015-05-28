@@ -24,6 +24,7 @@ import data.UserInformation;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
+import com.facebook.SessionLoginBehavior;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
@@ -56,7 +57,8 @@ public class LoginActivityFragment extends Fragment implements
 	Animation fadeIn;
 
 	/* Request code used to invoke sign in user interactions. */
-	private static final int RC_SIGN_IN = 0;
+	private static final int GOOGLE_SIGN_IN = 0;
+    private static final int FACEBOOK_SIGN_IN = 64206;
 
 	/* Client used to interact with Google APIs. */
 	private GoogleApiClient mGoogleApiClient;
@@ -95,7 +97,7 @@ public class LoginActivityFragment extends Fragment implements
 		this.context = getActivity().getApplicationContext();
 		activity = getActivity();
 		//GPSManager.turnGPSOn(context);
-		SharedPreferencesManager.init(context);
+		//SharedPreferencesManager.init(context);
         mGoogleApiClient = buildGoogleApiClient();
 	}
 
@@ -128,7 +130,9 @@ public class LoginActivityFragment extends Fragment implements
 
 
 		authButton.setReadPermissions(Arrays.asList("email"));
-		buttonfreelogin = (ImageButton) view.findViewById(R.id.buttonfreelogin);
+
+
+        buttonfreelogin = (ImageButton) view.findViewById(R.id.buttonfreelogin);
 		buttonfreelogin.setAnimation(fadeIn);
 
 		googleLogin = (SignInButton) view.findViewById(R.id.google);
@@ -170,6 +174,7 @@ public class LoginActivityFragment extends Fragment implements
 		//if it is a google+ account currentPerson returns a value, else it is null
 		if (currentPerson != null) {
 			String name = currentPerson.getDisplayName();
+            UserInformation.setGoogleUserImage(currentPerson.getImage().getUrl());
 			UserInformation.setName(name);
 			Log.d("MY NAME: ", name);
 		}
@@ -177,6 +182,8 @@ public class LoginActivityFragment extends Fragment implements
         Log.d("MY EMAIL: ",email);
 		UserInformation.setEmail(email);
 		SharedPreferencesManager.setLoggedMethod(LoggingTypes.GMAIL.getIntValue());
+
+        UserInformation.setGoogleApiClient(mGoogleApiClient);
         startFirstActivity();
         //Plus.PeopleApi.loadVisible(mGoogleApiClient, null)
         //       .setResultCallback(this);
@@ -189,15 +196,6 @@ public class LoginActivityFragment extends Fragment implements
     public void onStart() {
         super.onStart();
         //mGoogleApiClient.connect();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        if (mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
     }
 
     protected PendingIntent mSignInIntent;
@@ -219,7 +217,7 @@ public class LoginActivityFragment extends Fragment implements
                 try {
 
                     mSignInProgress = STATE_IN_PROGRESS;
-                    result.startResolutionForResult(activity, RC_SIGN_IN);
+                    result.startResolutionForResult(activity, GOOGLE_SIGN_IN);
 
                 } catch (IntentSender.SendIntentException e) {
                     Log.i(TAG, "Sign in intent could not be sent: "
@@ -257,9 +255,8 @@ public class LoginActivityFragment extends Fragment implements
 								// ziskanie informacii do statickej triedy
 								// UserInformation
 								UserInformation.setLoggedIn(true);
-								UserInformation.setLoggingButton(authButton);
 								UserInformation.setName(user.getName());
-								UserInformation.setId(user.getId());
+								UserInformation.setFacebookID(user.getId());
 								UserInformation.setEmail((String) user.getProperty("email"));
 
 								SharedPreferencesManager.setLoggedMethod(LoggingTypes.FACEBOOK.getIntValue());
@@ -294,7 +291,7 @@ public class LoginActivityFragment extends Fragment implements
     public void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
         switch (requestCode) {
-            case RC_SIGN_IN:
+            case GOOGLE_SIGN_IN:
                 if (resultCode == activity.RESULT_OK) {
                     // If the error resolution was successful we should continue
                     // processing errors.
@@ -310,6 +307,9 @@ public class LoginActivityFragment extends Fragment implements
                     // onStart is not called so we need to re-attempt connection here.
                     mGoogleApiClient.connect();
                 }
+                break;
+            case FACEBOOK_SIGN_IN:
+                uiHelper.onActivityResult(requestCode, resultCode, data);
                 break;
         }
     }
