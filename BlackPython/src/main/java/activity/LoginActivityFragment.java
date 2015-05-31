@@ -3,8 +3,10 @@ package activity;
 import java.util.Arrays;
 import java.util.Set;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
@@ -117,7 +119,17 @@ public class LoginActivityFragment extends Fragment
 			@Override
 			public void onClick(View v) {
 				if (!InternetValidation.haveNetworkConnection(activity)) {
-					Toast.makeText(getActivity(), "Internet Connection Required.", Toast.LENGTH_LONG);
+					//Toast.makeText(getActivity(), "Internet Connection Required.", Toast.LENGTH_LONG);
+					/*new AlertDialog.Builder(getActivity())
+							.setTitle("Error Occured")
+							.setMessage("Internet Connection Required")
+							.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int which) {
+									// FACEBOOK SHALL NOT PASS
+								}
+							})
+							.setIcon(android.R.drawable.ic_dialog_alert)
+							.show();*/
 				}
 				else
 				{
@@ -181,7 +193,18 @@ public class LoginActivityFragment extends Fragment
 			
 			Request.executeBatchAsync(request);
 		} else if (state.isClosed()) {
-			Log.i(TAG, "Logged out...");
+			if (!InternetValidation.haveNetworkConnection(activity)) {
+				new AlertDialog.Builder(getActivity())
+						.setTitle("Error Occured")
+						.setMessage("Internet Connection Required")
+						.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								dialog.dismiss();
+							}
+						})
+						.setIcon(android.R.drawable.ic_dialog_alert)
+						.show();
+			}
 		}
 	}
 	

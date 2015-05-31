@@ -1,8 +1,10 @@
 package activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
@@ -132,7 +134,16 @@ public class GoogleConnection extends Fragment implements
         {
             if (action == ACTION_CONNECT)
             {
-                Toast.makeText(getActivity().getApplicationContext(), "Chyba siete.", Toast.LENGTH_LONG).show();
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Error Occured")
+                        .setMessage("Internet Connection Required")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
             }
             else if (action == ACTION_DISCONNECT)
             {
