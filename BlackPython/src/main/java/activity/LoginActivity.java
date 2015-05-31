@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -41,11 +43,9 @@ public class LoginActivity extends FragmentActivity
     {
         super.onActivityResult(requestCode, resultCode, data);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentById(android.R.id.content);
-        if (fragment != null)
+        if (loginf != null)
         {
-            ((LoginActivityFragment)fragment).onActivityResult(requestCode, resultCode,data);
+            loginf.onActivityResult(requestCode, resultCode,data);
         }
     }
 
@@ -79,19 +79,12 @@ public class LoginActivity extends FragmentActivity
             UserInformation.init(this);
             int loggedMethod = UserInformation.getLoggedMethod();
 
-            if (loggedMethod == LoggingTypes.GMAIL.getIntValue())
+            if (loggedMethod == LoggingTypes.GMAIL.getIntValue() || loggedMethod == LoggingTypes.FACEBOOK.getIntValue())
             {
-                Intent intent = new Intent(this,GoogleLogin.class);
+                Intent intent = new Intent(this,Index.class);
                 startActivity(intent);
                 this.overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
                 this.finish();
-            }
-            else if (loggedMethod == LoggingTypes.FACEBOOK.getIntValue())
-            {
-                 Intent intent = new Intent(this,Index.class);
-                 startActivity(intent);
-                 this.overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
-                 this.finish();
             }
             else
             {

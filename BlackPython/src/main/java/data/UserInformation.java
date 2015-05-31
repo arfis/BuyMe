@@ -16,7 +16,6 @@ public class UserInformation {
 	public static final String PREFS_NAME = "HCPreferences";
 
     //GOOGLE
-    static String googleUserImage;
     static GoogleApiClient googleApiClient;
 
     //COUPONS
@@ -50,11 +49,15 @@ public class UserInformation {
 
     public static void setGoogleUserImage(String img)
     {
-        googleUserImage = img;
+        SharedPreferencesManager.setGoogleImg(img);
     }
     public static String getGoogleUserImage()
     {
-        return googleUserImage;
+        return SharedPreferencesManager.getGoogleImg();
+    }
+    private static void clearGoogleImage()
+    {
+        SharedPreferencesManager.setGoogleImg("");
     }
 
     public static int getLoggedMethod()
@@ -98,6 +101,7 @@ public class UserInformation {
         clearEmail();
         clearName();
         clearFacebookID();
+        clearGoogleImage();
         clearLoggedMethod();
     }
 
