@@ -2,6 +2,7 @@ package activity;
 
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
@@ -39,10 +40,13 @@ public class GoogleConnection extends Fragment implements
     private GoogleApiClient mGoogleApiClient;
 
     private int mSignInProgress;
-
+    ProgressDialog dialog;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        dialog = new ProgressDialog(getActivity());
+        dialog.setCancelable(false);
 
         mGoogleApiClient = buildGoogleApiClient();
         action = this.getArguments().getString("action");
@@ -95,6 +99,8 @@ public class GoogleConnection extends Fragment implements
             mGoogleApiClient.disconnect();
         }
 
+        dialog.dismiss();
+
     }
 
     private void startFirstActivity() {
@@ -117,6 +123,7 @@ public class GoogleConnection extends Fragment implements
     public void onConnectionFailed(ConnectionResult result) {
         Log.i(TAG, "onConnectionFailed: ConnectionResult.getErrorCode() = "
                 + result.getErrorCode());
+        dialog.dismiss();
 
         if (result.getErrorCode() == ConnectionResult.API_UNAVAILABLE ||
             result.getErrorCode() == ConnectionResult.TIMEOUT ||
@@ -168,6 +175,8 @@ public class GoogleConnection extends Fragment implements
         switch (requestCode) {
             case RC_SIGN_IN:
                 if (resultCode == getActivity().RESULT_OK) {
+                    dialog.setMessage("Signing in.");
+                    dialog.show();
                     // If the error resolution was successful we should continue
                     // processing errors.
                     mSignInProgress = STATE_SIGN_IN;

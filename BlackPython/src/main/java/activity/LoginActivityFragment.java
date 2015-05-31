@@ -46,11 +46,6 @@ import utils.LoggingTypes;
 
 public class LoginActivityFragment extends Fragment
 {
-
-    private static final int STATE_DEFAULT = 0;
-    private static final int STATE_SIGN_IN = 1;
-    private static final int STATE_IN_PROGRESS = 2;
-
 	GoogleConnection googleConnection;
 
 	ImageButton buttonfreelogin;
@@ -136,8 +131,6 @@ public class LoginActivityFragment extends Fragment
 			public void onClick(View v) {
 				SharedPreferencesManager.setLoggedMethod(LoggingTypes.FREE.getIntValue());
 				startFirstActivity();
-
-				//new LoadData(context).execute();
 			}
 		});
 		googleLogin.setOnClickListener(new OnClickListener() {
