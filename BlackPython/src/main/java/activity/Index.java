@@ -8,6 +8,7 @@ import async.LoadData;
 import data.Const;
 import data.CouponSet;
 import data.DrawerItem;
+import data.MemoryStorage;
 import data.UserInformation;
 
 import com.andexert.library.RippleView;
@@ -20,6 +21,7 @@ import com.blackpython.R;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 
+import fakeData.FalseCoupons;
 import utils.LoggingTypes;
 
 import adapter.DrawerListAdapter;
@@ -128,18 +130,18 @@ public class Index extends ActionBarActivity {
 
         rw = (RippleView) findViewById(R.id.more);
         rw2 = (RippleView) findViewById(R.id.more2);
-        rw3 = (RippleView) findViewById(R.id.more3);
+        //rw3 = (RippleView) findViewById(R.id.more3);
         rw4 = (RippleView) findViewById(R.id.more5);
         rw5 = (RippleView) findViewById(R.id.more6);
 
         coupon = (TableRow) findViewById(R.id.coupon);
-        about = (TableRow) findViewById(R.id.about);
+        //about = (TableRow) findViewById(R.id.about);
         info = (TableRow) findViewById(R.id.info);
         rules = (TableRow) findViewById(R.id.rulez);
         map = (TableRow) findViewById(R.id.map);
 
         tcoupon = (TextView) findViewById(R.id.txtCoupon);
-        tabout = (TextView) findViewById(R.id.txtAbout);
+        //tabout = (TextView) findViewById(R.id.txtAbout);
         tinfo = (TextView) findViewById(R.id.txtInfo);
         trules = (TextView) findViewById(R.id.txtRules);
         tmap = (TextView) findViewById(R.id.txtMap);
@@ -329,12 +331,12 @@ public class Index extends ActionBarActivity {
     public void resetDrawerColors(){
         coupon.setBackgroundResource(R.color.greyDark);
         rules.setBackgroundResource(R.color.greyDark);
-        about.setBackgroundResource(R.color.greyDark);
+        //about.setBackgroundResource(R.color.greyDark);
         info.setBackgroundResource(R.color.greyDark);
         map.setBackgroundResource(R.color.greyDark);
         tcoupon.setTextColor(getResources().getColor(R.color.greyLight));
         trules.setTextColor(getResources().getColor(R.color.greyLight));
-        tabout.setTextColor(getResources().getColor(R.color.greyLight));
+        //tabout.setTextColor(getResources().getColor(R.color.greyLight));
         tinfo.setTextColor(getResources().getColor(R.color.greyLight));
         tmap.setTextColor(getResources().getColor(R.color.greyLight));
     }
@@ -377,6 +379,7 @@ public class Index extends ActionBarActivity {
             }
 
         });
+        /*
         rw3.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
 
             @Override
@@ -391,6 +394,7 @@ public class Index extends ActionBarActivity {
             }
 
         });
+        */
         rw4.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
 
             @Override
@@ -464,8 +468,28 @@ public class Index extends ActionBarActivity {
         super.onBackPressed();
     }
 
+    public static final boolean FALSE_COUPONS = true;
     public void loadDatabase()
     {
+        if (FALSE_COUPONS)
+        {
+            MemoryStorage db;
+            db = new MemoryStorage(context);
+            UserInformation.setMemory(db);
+
+            FalseCoupons.setDatabase(context);
+
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            Fragment_coupons coup = new Fragment_coupons();
+            Bundle bundle = new Bundle();
+            bundle.putInt("TYPE", 1);
+            coup.setArguments(bundle);
+            ft.replace(R.id.frame_container, coup);
+            ft.commit();
+            coupon.setBackgroundResource(R.color.greyLight);
+            return;
+        }
+
         final ProgressDialog dialog = new ProgressDialog(Index.this);
 
         new AsyncTask<Context, Void, Void>() {

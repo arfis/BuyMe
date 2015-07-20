@@ -181,8 +181,7 @@ public class LoginActivityFragment extends Fragment implements
 
         Log.d("MY EMAIL: ",email);
 		UserInformation.setEmail(email);
-		SharedPreferencesManager.setLoggedMethod(LoggingTypes.GMAIL.getIntValue());
-
+        UserInformation.setLoggedMethod(LoggingTypes.GMAIL.getIntValue());
         UserInformation.setGoogleApiClient(mGoogleApiClient);
         startFirstActivity();
         //Plus.PeopleApi.loadVisible(mGoogleApiClient, null)

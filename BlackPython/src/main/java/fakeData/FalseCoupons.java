@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import data.Coupon;
+import data.CouponSet;
 import data.MemoryStorage;
 import data.UserInformation;
 import utils.PictureConverter;
@@ -14,6 +15,7 @@ import java.util.List;
 public class FalseCoupons {
 
 	static List<Coupon> goldenCoupons = new ArrayList<Coupon>();
+    static ArrayList<Coupon> hotCoupons = new ArrayList<Coupon>();
 	static MemoryStorage coup;
 
 	public static void setDatabase(Context context)
@@ -27,22 +29,25 @@ public class FalseCoupons {
 		//ak je prazdna databaza tak sa vlozia nove kupony
    	 if(coup.isDatabaseEmpty() )
    	 {
-        coup.addCoupon(new Coupon("Vikendovy pobyt v hoteli Kempinsky Moskva","It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point " +
+        hotCoupons.add(new Coupon("Vikendovy pobyt v hoteli Kempinsky Moskva","It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point " +
         		"of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', " +
         		"making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, " +
         		"and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident," +
         		" sometimes on purpose (injected humour and the like).",0,1,"99",picture1));
-        coup.addCoupon(new Coupon("20% zlava na feferony","blablabla blabla bla sladkaslksldas asldk aslk a",0,1,"23",
+         hotCoupons.add(new Coupon("20% zlava na feferony","blablabla blabla bla sladkaslksldas asldk aslk a",0,1,"23",
         		picture2));
-        coup.addCoupon(new Coupon("30% Zlava na arasidy","blablabla blabla bla sladkaslksldas asldk aslk a",0,1,"53",
+         hotCoupons.add(new Coupon("30% Zlava na arasidy","blablabla blabla bla sladkaslksldas asldk aslk a",0,1,"53",
         		picture1));
-        coup.addCoupon(new Coupon("40% zlava na feferony","blablabla blabla bla sladkaslksldas asldk aslk a",0,1,"98",picture2));
-        coup.addCoupon(new Coupon("50% Zlava na arasidy","blablabla blabla bla sladkaslksldas asldk aslk a",0,1,"12",picture1));
-        coup.addCoupon(new Coupon("60% zlava na feferony","blablabla blabla bla sladkaslksldas asldk aslk a",0,1,"23",picture2));
-        coup.addCoupon(new Coupon("70% Zlava na arasidy","blablabla blabla bla sladkaslksldas asldk aslk a",0,1,"77",picture1));
-        coup.addCoupon(new Coupon("80% zlava na feferony","blablabla blabla bla sladkaslksldas asldk aslk a",0,1,"12",picture2));
-        coup.addCoupon(new Coupon("90% Zlava na arasidy","blablabla blabla bla sladkaslksldas asldk aslk a",0,1,"90",picture1));
-        coup.addCoupon(new Coupon("100% zlava na feferony","blablabla blabla bla sladkaslksldas asldk aslk a",0,1,"66",picture2));
+         hotCoupons.add(new Coupon("40% zlava na feferony","blablabla blabla bla sladkaslksldas asldk aslk a",0,1,"98",picture2));
+         hotCoupons.add(new Coupon("50% Zlava na arasidy","blablabla blabla bla sladkaslksldas asldk aslk a",0,1,"12",picture1));
+         hotCoupons.add(new Coupon("60% zlava na feferony","blablabla blabla bla sladkaslksldas asldk aslk a",0,1,"23",picture2));
+         hotCoupons.add(new Coupon("70% Zlava na arasidy","blablabla blabla bla sladkaslksldas asldk aslk a",0,1,"77",picture1));
+         hotCoupons.add(new Coupon("80% zlava na feferony","blablabla blabla bla sladkaslksldas asldk aslk a",0,1,"12",picture2));
+         hotCoupons.add(new Coupon("90% Zlava na arasidy","blablabla blabla bla sladkaslksldas asldk aslk a",0,1,"90",picture1));
+         hotCoupons.add(new Coupon("100% zlava na feferony","blablabla blabla bla sladkaslksldas asldk aslk a",0,1,"66",picture2));
+
+         CouponSet.setCoupons(hotCoupons);
+
         Log.d("kurva", Integer.toString(coup.getAllCoupons().size()));
    	 }
 		else{

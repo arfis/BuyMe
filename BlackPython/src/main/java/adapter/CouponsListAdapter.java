@@ -91,7 +91,7 @@ public class CouponsListAdapter extends ArrayAdapter<Coupon>{
 					Log.i("clicked", v.getTag().toString());
 					//po kliknuti na kupon sa znizi pocet kuponov a v databaze sa upravi tento pocet tak isto
 					if(CouponSet.getCoupons().get((Integer)v.getTag()).getOpened() == 0){
-						UserInformation.getMemory().couponOpened((Integer)v.getTag());
+						//UserInformation.getMemory().couponOpened((Integer)v.getTag());
 						SharedPreferencesManager.decreaseNew();
 						//mozno nejaky listener na znizenie poctu
 					}

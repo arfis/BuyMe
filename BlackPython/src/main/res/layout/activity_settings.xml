@@ -42,4 +42,16 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp" />
 
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Notifikacia"
+        android:id="@+id/btn_notify"
+        android:layout_below="@+id/switch1"
+        android:layout_alignLeft="@+id/switch_location"
+        android:layout_alignStart="@+id/switch_location"
+        android:layout_alignRight="@+id/switch_location"
+        android:layout_alignEnd="@+id/switch_location" />
+
 </RelativeLayout>
