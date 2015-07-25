@@ -48,10 +48,15 @@ public class FalseCoupons {
 
          CouponSet.setCoupons(hotCoupons);
 
+		 for(Coupon actualCoupon : hotCoupons){
+			 coup.addCoupon(actualCoupon);
+		 }
         Log.d("kurva", Integer.toString(coup.getAllCoupons().size()));
    	 }
 		else{
 		 Log.d("kurva","Nie je potrebne nacitavat databazu");
+		 hotCoupons = coup.getAllCoupons();
+		 CouponSet.setCoupons(hotCoupons);
 	 }
 	}
 	public static void setGolden(Context context){
