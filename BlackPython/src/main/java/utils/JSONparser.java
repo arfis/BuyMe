@@ -104,6 +104,15 @@ public class JSONparser {
                     HttpResponse httpResponse = httpClient.execute(httpPost);
                     HttpEntity httpEntity = httpResponse.getEntity();
                     inputStreamPicture = httpEntity.getContent();
+
+                    //Deafult Coupon Picture
+                    if (inputStreamPicture == null) {
+                        httpPost = new HttpGet("http://shtfplan.com/wp-content/uploads/2013/04/obamadollar.jpg");
+                        httpResponse = httpClient.execute(httpPost);
+                        httpEntity = httpResponse.getEntity();
+                        inputStreamPicture = httpEntity.getContent();
+                    }
+                    
                     blob =  getByteStream(inputStreamPicture);
                     if(type == 1)
                         coup.setPicture(blob);
