@@ -13,6 +13,9 @@ public class SharedPreferencesManager {
     static String TAG_NEW = "new";
     static String TAG_NAME = "name";
     static String TAG_FB_ID = "fbID";
+    static String TAG_GOOGLE_IMG = "googleImg";
+
+    static String TAG_GOOGLE_SHADOW = "googleShadow";
 
     static SharedPreferences sharedPrefs;
     static Context context;
@@ -22,6 +25,17 @@ public class SharedPreferencesManager {
         if(sharedPrefs == null)
             sharedPrefs = context.getSharedPreferences("wifi", context.MODE_PRIVATE);
     }
+
+    public static void setGoogleShadow(boolean flag)
+    {
+        SharedPreferences.Editor edit = sharedPrefs.edit();
+        edit.putBoolean(TAG_GOOGLE_SHADOW,flag);
+    }
+    public static boolean getGoogleShadow()
+    {
+        return sharedPrefs.getBoolean(TAG_GOOGLE_SHADOW, false);
+    }
+
     public static void setNew(int newCoup){
         SharedPreferences.Editor edit = sharedPrefs.edit();
         edit.putInt(TAG_NEW, newCoup).commit();
@@ -38,6 +52,13 @@ public class SharedPreferencesManager {
         edit.putInt(TAG_NEW, count--).commit();
     }
 
+    public static void setGoogleImg(String url)
+    {
+        SharedPreferences.Editor edit = sharedPrefs.edit();
+        edit.putString(TAG_GOOGLE_IMG, url).commit();
+    }
+
+    public static String getGoogleImg() { return sharedPrefs.getString(TAG_GOOGLE_IMG, ""); }
 
     public static void setFbID(String id)
     {

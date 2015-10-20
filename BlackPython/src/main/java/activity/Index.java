@@ -5,6 +5,8 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import async.LoadData;
+import async.LoadData2;
+import async.TaskCanceler;
 import data.Const;
 import data.CouponSet;
 import data.DrawerItem;
@@ -14,20 +16,14 @@ import com.andexert.library.RippleView;
 import com.facebook.Session;
 import com.facebook.widget.ProfilePictureView;
 import com.fragments.Fragment_coupons;
-import com.fragments.Fragment_info;
-import com.fragments.Fragment_rulez;
 import com.blackpython.R;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.plus.Plus;
 
 import utils.LoggingTypes;
 
-import adapter.DrawerListAdapter;
-
-import android.app.LauncherActivity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.v4.app.FragmentActivity;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.app.ProgressDialog;
@@ -46,10 +42,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -152,9 +146,14 @@ public class Index extends ActionBarActivity {
 
                 if (loggedMethod == LoggingTypes.GMAIL.getIntValue())
                 {
-                    GoogleApiClient mGoogleApiClient = UserInformation.getGoogleApiClient();
-                    Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
-                    mGoogleApiClient.disconnect();
+                    GoogleConnection googleConnection = new GoogleConnection();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("action", GoogleConnection.ACTION_DISCONNECT);
+                    googleConnection.setArguments(bundle);
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .add(android.R.id.content,googleConnection)
+                            .commit();
                 }
                 else if (loggedMethod == LoggingTypes.FACEBOOK.getIntValue())
                 {
@@ -212,7 +211,6 @@ public class Index extends ActionBarActivity {
                 try
                 {
                     googlePicture.setImageBitmap(bitmap);
-                    loadDatabase();
                 }
                 catch (Exception e)
                 {
@@ -240,14 +238,14 @@ public class Index extends ActionBarActivity {
             googlePicture.setVisibility(View.GONE);
             facebookPicture.setVisibility(View.VISIBLE);
             facebookPicture.setProfileId(UserInformation.getFacebookID());
-            loadDatabase();
         }
         else
         {
             googlePicture.setVisibility(View.GONE);
             facebookPicture.setVisibility(View.VISIBLE);
-            loadDatabase();
         }
+
+        if (InternetValidation.haveNetworkConnection(this)) loadDatabase();
 
         TextView couponsCount = (TextView) findViewById(R.id.usedCoupons);
         couponsCount.setText("Pocet pouzitych kuponov je: " + SharedPreferencesManager.getUsedCoupons());
@@ -467,12 +465,19 @@ public class Index extends ActionBarActivity {
     public void loadDatabase()
     {
         final ProgressDialog dialog = new ProgressDialog(Index.this);
+        dialog.setCancelable(false);
+        final Handler handler = new Handler();
 
         new AsyncTask<Context, Void, Void>() {
             @Override
             protected Void doInBackground(Context... contexts) {
-                LoadData ld = new LoadData(context);
-                ld.getData(context, Index.this);
+                //LoadData ld = new LoadData(context);
+                //ld.getData(context, Index.this);
+
+                LoadData2 task = new LoadData2(context,Index.this);
+                TaskCanceler taskCanceler = new TaskCanceler(task);
+                handler.postDelayed(taskCanceler, 5*1000); //po piatich sekundach kill loadu
+                task.execute();
 
                 return null;
             }
