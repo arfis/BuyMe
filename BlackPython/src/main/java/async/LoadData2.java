@@ -37,6 +37,7 @@ public class LoadData2 extends AsyncTask<Void, Void, Void> {
         this.activity = activity;
     }
 
+
     @Override
     public void onPostExecute(Void ret) {
         JSONparser p = new JSONparser();

@@ -29,16 +29,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
             android:layout_marginTop="18dp"
-            android:gravity="center_vertical|center_horizontal|end" />
+            android:gravity="center_vertical|center_horizontal|end"
+            android:layout_alignLeft="@+id/google"
+            android:layout_alignStart="@+id/google"
+            android:layout_alignRight="@+id/google"
+            android:layout_alignEnd="@+id/google" />
 
         <ImageButton
             android:id="@+id/buttonfreelogin"
             android:layout_width="220dp"
             android:layout_height="50dp"
             android:background="@drawable/menu_bez"
-            android:src="@drawable/abc_ab_share_pack_holo_dark"
             android:layout_below="@+id/google"
             android:layout_centerHorizontal="true" />
 
@@ -47,10 +49,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/authButton"
-            android:layout_alignLeft="@+id/authButton"
-            android:layout_alignStart="@+id/authButton"
-            android:layout_alignRight="@+id/authButton"
-            android:layout_alignEnd="@+id/authButton" />
+            android:layout_alignLeft="@+id/buttonfreelogin"
+            android:layout_alignStart="@+id/buttonfreelogin"
+            android:layout_alignRight="@+id/buttonfreelogin"
+            android:layout_alignEnd="@+id/buttonfreelogin" />
     </RelativeLayout>
 
 </LinearLayout>

@@ -46,7 +46,8 @@ public class MemoryStorage extends SQLiteOpenHelper{
                 "used INTEGER, "+
                 "picture BLOB, "+
                 "company TEXT, "+
-                "code BLOB )";
+                "code BLOB, " +
+                "opened INTEGER )"; //9
 
         String CREATE_POINTS_TABLE = "CREATE TABLE points ( " +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -125,7 +126,7 @@ public class MemoryStorage extends SQLiteOpenHelper{
         values.put(KEY_ABOUT, coupon.getAbout());
         values.put(KEY_PICTURE, coupon.getPictureByte());
         values.put(KEY_COMPANY, coupon.getCompany());
-        values.put(KEY_CODE, coupon.getCodeByte());
+        values.put(KEY_CODE, coupon.getCodeByte()); //7
         values.put(KEY_OPENED,coupon.getOpened());
         // 3. insert
         db.insert(TABLE_COUPONS, // table
