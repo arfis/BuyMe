@@ -259,7 +259,7 @@ public class Index extends ActionBarActivity {
         couponsCount.setText("Pocet pouzitych kuponov je: " + SharedPreferencesManager.getUsedCoupons());
         if(SharedPreferencesManager.getNew()>0) {
             newCoupons.setVisibility(View.VISIBLE);
-            newCoupons.setText(SharedPreferencesManager.getNew());
+            newCoupons.setText(String.valueOf(SharedPreferencesManager.getNew()));
         }
         //TODO: vymazat tieto dva riadky
         else {

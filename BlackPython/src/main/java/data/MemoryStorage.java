@@ -46,7 +46,8 @@ public class MemoryStorage extends SQLiteOpenHelper{
                 "used INTEGER, "+
                 "picture BLOB, "+
                 "company TEXT, "+
-                "code BLOB )";
+                "code BLOB, "+
+                "opened INTEGER)";
 
         String CREATE_POINTS_TABLE = "CREATE TABLE points ( " +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
