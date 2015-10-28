@@ -18,6 +18,7 @@ import com.facebook.widget.ProfilePictureView;
 import com.fragments.Fragment_coupons;
 import com.blackpython.R;
 
+import utils.FacebookPicture;
 import utils.LoggingTypes;
 
 import android.graphics.Bitmap;
@@ -60,11 +61,11 @@ public class Index extends ActionBarActivity {
     private TableRow coupon, info, about, map, rules;
     private TextView tcoupon,tinfo,tabout,tmap,trules;
     RippleView rw,rw2,rw3,rw4,rw5;
-    Button logOut;
+    ImageView logOut;
     Context context;
 
     ImageView googlePicture;
-    ProfilePictureView facebookPicture;
+    FacebookPicture facebookPicture;
 
 
     @Override
@@ -138,7 +139,7 @@ public class Index extends ActionBarActivity {
         trules = (TextView) findViewById(R.id.txtRules);
         tmap = (TextView) findViewById(R.id.txtMap);
 
-        logOut = (Button) findViewById(R.id.logOutButton);
+        logOut = (ImageView) findViewById(R.id.logOutButton);
         logOut.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
@@ -224,7 +225,7 @@ public class Index extends ActionBarActivity {
     public void loadData()
     {
         googlePicture = (ImageView) findViewById(R.id.userPicture);
-        facebookPicture = (ProfilePictureView) findViewById(R.id.profilePictureView1);
+        facebookPicture = (FacebookPicture) findViewById(R.id.profilePictureView1);
         int loggedMethod = UserInformation.getLoggedMethod();
 
         if (loggedMethod == LoggingTypes.GMAIL.getIntValue())
@@ -259,9 +260,8 @@ public class Index extends ActionBarActivity {
         couponsCount.setText("Pocet pouzitych kuponov je: " + SharedPreferencesManager.getUsedCoupons());
         if(SharedPreferencesManager.getNew()>0) {
             newCoupons.setVisibility(View.VISIBLE);
-            newCoupons.setText(SharedPreferencesManager.getNew());
+            newCoupons.setText(String.valueOf(SharedPreferencesManager.getNew()));
         }
-        //TODO: vymazat tieto dva riadky
         else {
             newCoupons.setVisibility(View.GONE);
         }

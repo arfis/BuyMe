@@ -23,19 +23,20 @@ import activity.Index;
 import data.Const;
 import data.Coupon;
 import data.CouponSet;
+import data.DBCoupon;
 import data.MemoryStorage;
 import data.UserInformation;
 import manager.SharedPreferencesManager;
 
 public class JSONparser {
     CouponSet coupons;
-    ArrayList<Coupon> coupList = new ArrayList<Coupon>();
+    ArrayList<DBCoupon> coupList = new ArrayList<DBCoupon>();
     MemoryStorage db;
+    DBCoupon dbcoup;
+    int couponNumber = 0;
 
     public CouponSet parse(String results,Context ctx,Index runningActivity){
         coupons = new CouponSet();
-        db = new MemoryStorage(ctx);
-        UserInformation.setMemory(db);
 
         try {
 
@@ -59,15 +60,14 @@ public class JSONparser {
                     coup.setPrice(((JSONObject) jsonCoupons.get(i)).get("discount").toString());
                     getPicture(((JSONObject) jsonCoupons.get(i)).get("picture").toString(), coup, 1, runningActivity);
                     getPicture(((JSONObject) jsonCoupons.get(i)).get("code").toString(), coup, 2, runningActivity);
-                    //coupList.add(coup);
-                    //db.addCoupon(coup);
+
                 }
 
                 coupons.setCoupons(coupList);
             }
             //ak nie su kupony stiahnute - ziadne nove - tak sa nacitaju kupony z databazy
             else{
-                coupons.setCoupons(db.getAllCoupons());
+                coupons.setCoupons(DBCoupon.find(DBCoupon.class, null, null));
             }
         }catch(Exception e){
             Log.d("parseError", e.toString());
@@ -107,7 +107,7 @@ public class JSONparser {
 
                     //Deafult Coupon Picture
                     if (inputStreamPicture == null) {
-                        httpPost = new HttpGet("http://shtfplan.com/wp-content/uploads/2013/04/obamadollar.jpg");
+                        httpPost = new HttpGet(Const.DEFAULT_PIC);
                         httpResponse = httpClient.execute(httpPost);
                         httpEntity = httpResponse.getEntity();
                         inputStreamPicture = httpEntity.getContent();
@@ -118,9 +118,13 @@ public class JSONparser {
                         coup.setPicture(blob);
                     else {
                         coup.setCode(blob);
-                        coupList.add(coup);
-                        db.addCoupon(coup);
+                        //db.addCoupon(coup); String title, int permission, String price, String about, int used, byte[] picture, String company, byte[] code, int opened
+                        dbcoup = new DBCoupon(coup.getTitle(),coup.isPermission(),coup.getPrice(),coup.getAbout(),coup.isUsed(),coup.getPictureByte(),coup.getCompany(),coup.getCodeByte(),0,couponNumber);
+                        coupList.add(dbcoup);
                         runningActivity.refresh();
+                        dbcoup.setId((long)1);
+                        couponNumber++;
+                        dbcoup.save();
                         Log.d("Download","coupon added to others");
                     }
                     Log.d("Download","Picture downloaded");

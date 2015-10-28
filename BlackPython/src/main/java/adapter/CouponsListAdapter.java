@@ -1,6 +1,7 @@
 package adapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import activity.ActivityFullscreen;
 import android.annotation.SuppressLint;
@@ -26,18 +27,19 @@ import data.CouponSet;
 import data.DrawerItem;
 import data.UserInformation;
 import manager.SharedPreferencesManager;
+import data.DBCoupon;
 
-public class CouponsListAdapter extends ArrayAdapter<Coupon>{
+public class CouponsListAdapter extends ArrayAdapter<DBCoupon>{
 
 	private static final int SET_COUPON_USED_FLAG = 0;
 	Context mContext;
-	ArrayList<Coupon> data;
+	ArrayList<DBCoupon> data;
 	LayoutInflater inflater;
 	Activity activity;
 
-	 public CouponsListAdapter(Context mContext, ArrayList<Coupon> data,Activity activity){
-		 
+	 public CouponsListAdapter(Context mContext, ArrayList<DBCoupon> data,Activity activity){
 	        super(mContext, R.layout.component_coupons,data);
+
 	        this.mContext = mContext;
 	        this.data = data;
 		 	this.activity = activity;
@@ -53,7 +55,7 @@ public class CouponsListAdapter extends ArrayAdapter<Coupon>{
 		}
 
 		@Override
-		public Coupon getItem(int position) {
+		public DBCoupon getItem(int position) {
 			return data.get(position);
 		}
 		
@@ -76,8 +78,8 @@ public class CouponsListAdapter extends ArrayAdapter<Coupon>{
 	        
 	        
 	 
-	        Coupon actualCoupon = data.get(position);
-	        viewHolder.imageView.setTag(actualCoupon.getId());
+	        DBCoupon actualCoupon = data.get(position);
+	        viewHolder.imageView.setTag(actualCoupon.previewId);
 
 	        viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
 
@@ -87,12 +89,13 @@ public class CouponsListAdapter extends ArrayAdapter<Coupon>{
 	                Bundle b = new Bundle();
 	                //do bundle sa vlozi hodnota id taka ista ako je v databaze
 	                Log.i("Coupon","Selected coupon is: " + v.getTag());
-					b.putInt("pressed_coupon", (Integer) v.getTag());
-					Log.i("clicked", v.getTag().toString());
-					//po kliknuti na kupon sa znizi pocet kuponov a v databaze sa upravi tento pocet tak isto
-					if(CouponSet.getCoupons().get((Integer)v.getTag()).getOpened() == 0){
-						UserInformation.getMemory().couponOpened((Integer)v.getTag());
+					Integer id_p = (Integer) v.getTag();
+					b.putInt("pressed_coupon", id_p);
+					Log.i("clicked", v.getTag().toString() + " "  + CouponSet.getCoupons().get(id_p).opened);
+					//decrease of the count of the new coupons
+					if(CouponSet.getCoupons().get(id_p).opened == 0){
 						SharedPreferencesManager.decreaseNew();
+						Log.d("Used Coupons","kupon bol pouzity: " + CouponSet.getCoupons().get((Integer)v.getTag()).opened);
 						//mozno nejaky listener na znizenie poctu
 					}
 
@@ -102,7 +105,7 @@ public class CouponsListAdapter extends ArrayAdapter<Coupon>{
 	            }
 	        });
 
-	        Bitmap blob = data.get(position).getPicture();
+	        Bitmap blob = data.get(position).bpicture;
 	        
 	        viewHolder.imageView.setImageBitmap(blob);
 	       

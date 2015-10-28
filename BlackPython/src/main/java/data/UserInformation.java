@@ -32,14 +32,6 @@ public class UserInformation {
         SharedPreferencesManager.init(activity);
 	}
 
-    public static MemoryStorage getMemory() {
-        return mMemoryStorage;
-    }
-
-    public static void setMemory(MemoryStorage memory) {
-        mMemoryStorage = memory;
-    }
-
 	public static boolean isLoggedIn() {
 		return loggedInFb;
 	}

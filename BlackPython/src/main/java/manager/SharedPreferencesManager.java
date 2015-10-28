@@ -110,7 +110,7 @@ public class SharedPreferencesManager {
         return sharedPrefs.getInt(TAG_LOG,-1);
     }
 
-    public static void setUsedCoupon(int used){
+    public static void setUsedCoupon(long used){
         int count;
         String couponID = "";
 

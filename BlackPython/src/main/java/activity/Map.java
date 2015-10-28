@@ -99,7 +99,7 @@ public class Map extends ActionBarActivity {
 
 			if(myLocation == null) {
 
-				makeText(getApplicationContext(), getResources().getString(R.string.error_map), Toast.LENGTH_SHORT).show();
+				makeText(getApplicationContext(), getResources().getString(R.string.error_map), Toast.LENGTH_LONG).show();
 				finish();
 			}
 			else {
@@ -181,7 +181,7 @@ public class Map extends ActionBarActivity {
 	    private void removeFromList(int index)
 	    {
 	    	items.remove(index);
-	    	mMyLocationOverlay.getItem(index).setMarker(this.getResources().getDrawable(R.drawable.abc_ab_share_pack_holo_dark));
+	    	mMyLocationOverlay.getItem(index).setMarker(this.getResources().getDrawable(R.drawable.abc_ab_share_pack_mtrl_alpha));
 	    	mMapView.invalidate();     
 	        mMapView.refreshDrawableState();
 	    }

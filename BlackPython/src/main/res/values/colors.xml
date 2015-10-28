@@ -4,6 +4,7 @@
    <color name="openCoupon">#EFE7CE</color>
    <color name="white">#EFE7CE</color>
    <color name="greyLight">#9C9B96</color>
+   <color name="greyMedium">#44433E</color>
    <color name="greyDark">#33322D</color>
    <color name="black">#000000</color>
 </resources>

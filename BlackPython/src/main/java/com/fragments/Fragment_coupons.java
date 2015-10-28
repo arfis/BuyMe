@@ -15,13 +15,17 @@ import com.blackpython.R;
 import data.Coupon;
 import data.CouponSet;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import adapter.CouponsListAdapter;
 import fakeData.FalseCoupons;
+import data.DBCoupon;
 
 public class Fragment_coupons extends Fragment{
 
 	View v;
-    private ArrayList<Coupon> dataCoupons = new ArrayList<Coupon>();
+    private ArrayList<DBCoupon> AdataCoupons = new ArrayList<>();
     private ListView couponPage;
 	int type;
 
@@ -47,16 +51,18 @@ public class Fragment_coupons extends Fragment{
     public void setCouponList(int type)
     {
 		//data ktore vstupuju do adaptera
-    	if(dataCoupons.size()>0)dataCoupons.clear();
+    	if(AdataCoupons!=null && AdataCoupons.size()>0)AdataCoupons.clear();
+
 
 		if(type == 1) {
 			this.getActivity().setTitle("Hot Coupons");
 			if(CouponSet.getCoupons() != null) {
-				for (Coupon coupon : CouponSet.getCoupons()) {
-					if (coupon.isUsed() == 0) {
+				for (DBCoupon coupon : CouponSet.getCoupons()) {
+					if (coupon.used == 0) {
 						Activity activity = getActivity();
-						dataCoupons.add(coupon);
-						CouponsListAdapter couponsList = new CouponsListAdapter(activity, dataCoupons, getActivity());
+						AdataCoupons.add(coupon);
+
+						CouponsListAdapter couponsList = new CouponsListAdapter(activity, AdataCoupons, getActivity());
 						couponPage.setAdapter(couponsList);
 					}
 				}
@@ -64,11 +70,11 @@ public class Fragment_coupons extends Fragment{
 		}
 		else {
 			this.getActivity().setTitle("Golden Coupon");
-			for (Coupon coupon : CouponSet.getGolden()) {
-				if (coupon.isUsed() == 0) {
+			for (DBCoupon coupon : CouponSet.getGolden()) {
+				if (coupon.used == 0) {
 					Activity activity = getActivity();
-					dataCoupons.add(coupon);
-					CouponsListAdapter couponsList = new CouponsListAdapter(activity, dataCoupons,getActivity());
+					AdataCoupons.add(coupon);
+					CouponsListAdapter couponsList = new CouponsListAdapter(activity, AdataCoupons,getActivity());
 					couponPage.setAdapter(couponsList);
 					//ak sa vyskytol zlaty kupon tak zobraz zlatu tehlicku
 					getActivity().invalidateOptionsMenu();

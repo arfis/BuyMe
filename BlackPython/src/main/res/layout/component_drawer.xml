@@ -9,7 +9,7 @@
         android:layout_width="fill_parent"
         android:layout_height="100dp"
         android:id="@+id/imageView"
-        android:src="@color/ripple_material_dark"
+        android:src="@color/greyMedium"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -18,7 +18,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/options"
-        android:layout_below="@+id/imageView">
+        android:layout_below="@+id/imageView"
+        android:background="@color/greyDark">
 
         <com.andexert.library.RippleView
             android:id="@+id/more"
@@ -65,7 +66,8 @@
                 android:layout_marginLeft="5dp"
                 android:textAlignment="center"
                 android:layout_gravity="center"
-                android:gravity="center" />
+                android:gravity="center"
+                android:layout_marginBottom="2dp" />
         </TableRow>
 
         </com.andexert.library.RippleView>
@@ -218,59 +220,79 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="60dp"
-        android:layout_alignParentBottom="true"
-         android:background="#333"
+        android:background="@color/greyMedium"
         android:id="@+id/relativeLayout"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/options">
 
         <TextView
-            android:id="@+id/drawerName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Medium Text"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
-
-        <com.facebook.widget.ProfilePictureView
-            android:id="@+id/profilePictureView1"
-            android:layout_width="70dp"
-            android:layout_height="100dp"
-            android:layout_toLeftOf="@+id/drawerName"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/drawerName">
-        </com.facebook.widget.ProfilePictureView>
-
-        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Medium Text"
+            android:text="@string/logout"
             android:id="@+id/usedCoupons"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Odhlásiť sa"
-            android:id="@+id/logOutButton"
-            android:layout_below="@+id/profilePictureView1"
-            android:layout_toLeftOf="@+id/drawerName"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:paddingRight="2dp"
+            android:layout_alignBottom="@+id/logOutButton"
+            android:layout_toRightOf="@+id/userPicture"
+            android:layout_toEndOf="@+id/userPicture"
+            android:layout_marginLeft="85dp"
+            android:layout_marginStart="85dp"
+            android:layout_marginBottom="10dp" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/userPicture"
-            android:layout_toRightOf="@+id/profilePictureView1"
-            android:layout_alignRight="@+id/drawerName"
-            android:layout_alignEnd="@+id/drawerName"
-            android:layout_below="@+id/drawerName" />
+            android:src="@drawable/round_corner"
+            />
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/logOutButton"
+            android:src="@drawable/button_off"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@+id/usedCoupons"
+            android:layout_toEndOf="@+id/usedCoupons"
+            android:layout_marginLeft="2dp"
+            android:layout_marginBottom="2dp" />
 
     </RelativeLayout>
+
+    <utils.FacebookPicture
+        android:id="@+id/profilePictureView1"
+        android:layout_width="70dp"
+        android:layout_height="100dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="10dp">
+    </utils.FacebookPicture>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Five Knight"
+        android:id="@+id/txtRank"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:layout_below="@+id/drawerName"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/drawerName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Michal Ševčík"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="bold"
+        android:textSize="25dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="40dp" />
 
 </RelativeLayout>

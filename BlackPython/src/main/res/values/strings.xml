@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="error_map">Aplikácia nemohla najst pozíciu, prosim ujistite sa že v nastaveniach je zapnutá kontrola pozície</string>
+    <string name="error_map">Aplikácia nemohla nájsť pozíciu, prosim ujistíte sa, že v nastaveniach je zapnutá kontrola pozície</string>
     <string name="app_name">Hot Coupons</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -13,7 +13,7 @@
     <string name="drawer2">Pravidlá</string>
     <string name="drawer3">O nás</string>
     <string name="drawer4">Info</string>
-    <string name="drawer5">Nájdi ma</string>
+    <string name="drawer5">GEO Hra</string>
     <string name="drawer6">Profil</string>
 
     <string name="distance_map">0.2</string>
@@ -25,7 +25,8 @@
         <item>Info</item>
         <item>Nájdi ma</item>
     </string-array>
-    
+
+    <string name="logout">Odhlásiť sa</string>
     <string name="logged">loging</string>
  	<dimen name="countt">10dp</dimen>
  	 <string name="loggedDefault">0</string>

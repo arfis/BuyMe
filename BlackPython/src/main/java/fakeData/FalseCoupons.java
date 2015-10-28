@@ -18,7 +18,6 @@ public class FalseCoupons {
 
 	public static void setDatabase(Context context)
 	{
-		coup = UserInformation.getMemory();
 		byte [] picture1;
 		byte [] picture2;
 		picture1 = PictureConverter.convertToByte(1,context);
