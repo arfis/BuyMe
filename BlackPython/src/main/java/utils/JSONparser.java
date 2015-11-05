@@ -115,6 +115,7 @@ public class JSONparser {
                     }
                     
                     blob =  getByteStream(inputStreamPicture);
+
                     if(type == 1)
                         coup.setPicture(blob);
                     else {

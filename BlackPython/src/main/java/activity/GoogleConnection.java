@@ -2,6 +2,7 @@ package activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import com.blackpython.R;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
@@ -127,6 +129,15 @@ public class GoogleConnection extends Fragment implements
                 + result.getErrorCode());
         dialog.dismiss();
 
+        if (result.getErrorCode() == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED ||
+            result.getErrorCode() == ConnectionResult.SERVICE_DISABLED ||
+            result.getErrorCode() == ConnectionResult.SERVICE_INVALID ||
+            result.getErrorCode() == ConnectionResult.SERVICE_MISSING)
+        {
+            Dialog dg = GooglePlayServicesUtil.getErrorDialog(result.getErrorCode(),getActivity(),getTargetRequestCode());
+            dg.show();
+        }
+
         if (result.getErrorCode() == ConnectionResult.API_UNAVAILABLE ||
             result.getErrorCode() == ConnectionResult.TIMEOUT ||
             result.getErrorCode() == ConnectionResult.INTERRUPTED ||
@@ -170,6 +181,7 @@ public class GoogleConnection extends Fragment implements
                     mGoogleApiClient.connect();
                 }
             }
+
         }
 
         onSignedOut();
