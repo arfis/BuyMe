@@ -248,16 +248,15 @@ public class Index extends ActionBarActivity {
 
         if (InternetValidation.haveNetworkConnection(this)) loadDatabase();
 
-        TextView couponsCount = (TextView) findViewById(R.id.usedCoupons);
-        couponsCount.setText("Pocet pouzitych kuponov je: " + SharedPreferencesManager.getUsedCoupons());
+        //couponsCount.setText("Pocet pouzitych kuponov je: " + SharedPreferencesManager.getUsedCoupons());
         TextView dName = (TextView) findViewById(R.id.drawerName);
         dName.setText(UserInformation.getName());
     }
 
     public void updateCount(){
-        TextView couponsCount = (TextView) findViewById(R.id.usedCoupons);
+        //TextView couponsCount = (TextView) findViewById(R.id.usedCoupons);
         TextView newCoupons = (TextView) findViewById(R.id.counter);
-        couponsCount.setText("Pocet pouzitych kuponov je: " + SharedPreferencesManager.getUsedCoupons());
+        //couponsCount.setText("Pocet pouzitych kuponov je: " + SharedPreferencesManager.getUsedCoupons());
         if(SharedPreferencesManager.getNew()>0) {
             newCoupons.setVisibility(View.VISIBLE);
             newCoupons.setText(String.valueOf(SharedPreferencesManager.getNew()));

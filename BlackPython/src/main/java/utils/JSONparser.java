@@ -71,6 +71,7 @@ public class JSONparser {
             }
         }catch(Exception e){
             Log.d("parseError", e.toString());
+
         };
         return coupons;
     }

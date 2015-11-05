@@ -12,7 +12,9 @@
         android:layout_height="fill_parent"
         android:layout_alignParentLeft="true"
         android:clickable="true"
-        android:layout_below="@+id/toolbar" />
+        android:layout_below="@+id/toolbar"
+        android:layout_above="@+id/textView"
+        android:layout_marginBottom="100dp" />
 
     <include
         android:layout_width="fill_parent"
@@ -21,5 +23,14 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:id="@+id/toolbar" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Nejaky ten text"
+        android:id="@+id/textView"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

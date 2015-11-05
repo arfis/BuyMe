@@ -227,20 +227,6 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/options">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/logout"
-            android:id="@+id/usedCoupons"
-            android:paddingRight="2dp"
-            android:layout_alignBottom="@+id/logOutButton"
-            android:layout_toRightOf="@+id/userPicture"
-            android:layout_toEndOf="@+id/userPicture"
-            android:layout_marginLeft="85dp"
-            android:layout_marginStart="85dp"
-            android:layout_marginBottom="10dp" />
-
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -254,10 +240,7 @@
             android:id="@+id/logOutButton"
             android:src="@drawable/button_off"
             android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@+id/usedCoupons"
-            android:layout_toEndOf="@+id/usedCoupons"
-            android:layout_marginLeft="2dp"
-            android:layout_marginBottom="2dp" />
+            android:layout_centerHorizontal="true" />
 
     </RelativeLayout>
 
@@ -280,7 +263,9 @@
         android:textStyle="bold"
         android:textSize="20dp"
         android:layout_below="@+id/drawerName"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignLeft="@+id/drawerName"
+        android:layout_alignStart="@+id/drawerName"
+        android:layout_marginLeft="@dimen/drawer_rank_margin" />
 
     <TextView
         android:id="@+id/drawerName"
@@ -291,8 +276,8 @@
         android:textStyle="bold"
         android:textSize="25dp"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp"
-        android:layout_marginLeft="40dp" />
+        android:layout_toRightOf="@+id/profilePictureView1"
+        android:layout_toEndOf="@+id/profilePictureView1"
+        android:layout_marginLeft="@dimen/drawer_name_margin" />
 
 </RelativeLayout>

@@ -22,37 +22,33 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp">
 
         <com.facebook.widget.LoginButton
             android:id="@+id/authButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="18dp"
+            android:layout_width="@dimen/login_width"
+            android:layout_height="@dimen/login_height"
             android:gravity="center_vertical|center_horizontal|end"
-            android:layout_alignLeft="@+id/google"
-            android:layout_alignStart="@+id/google"
-            android:layout_alignRight="@+id/google"
-            android:layout_alignEnd="@+id/google" />
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp" />
 
         <ImageButton
             android:id="@+id/buttonfreelogin"
-            android:layout_width="220dp"
-            android:layout_height="50dp"
+            android:layout_width="@dimen/login_width"
+            android:layout_height="@dimen/login_height"
             android:background="@drawable/menu_bez"
             android:layout_below="@+id/google"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="2dp" />
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/google"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/login_g_width"
+            android:layout_height="@dimen/login_height"
             android:layout_below="@+id/authButton"
-            android:layout_alignLeft="@+id/buttonfreelogin"
-            android:layout_alignStart="@+id/buttonfreelogin"
-            android:layout_alignRight="@+id/buttonfreelogin"
-            android:layout_alignEnd="@+id/buttonfreelogin" />
+            android:layout_centerHorizontal="true" />
     </RelativeLayout>
 
 </LinearLayout>
